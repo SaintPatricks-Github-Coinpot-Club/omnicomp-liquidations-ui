@@ -5,7 +5,6 @@ import { useQuery } from "@apollo/client";
 import { UNDERWATER_ACCOUNTS } from "../apollo/omnicomp/queries";
 
 const useSubGraph = () => {
-
   const {
     loading: accountsLoading,
     error: accountsError,
@@ -19,10 +18,9 @@ const useSubGraph = () => {
 
   const queryAccounts = () => {
     if (accountsData) {
-      setAccounts(accountsData.accounts)
+      setAccounts(accountsData.accounts);
     }
-  }
-
+  };
 
   useEffect(() => {
     queryAccounts();
@@ -31,7 +29,7 @@ const useSubGraph = () => {
   return {
     accounts,
   };
-}
+};
 
 const SubGraph = createContainer(useSubGraph);
 export default SubGraph;

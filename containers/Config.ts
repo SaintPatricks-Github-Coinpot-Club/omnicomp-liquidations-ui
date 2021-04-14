@@ -11,9 +11,7 @@ export const config = (network: Network | null) => {
         process.env.NEXT_PUBLIC_ONBOARD_API_KEY ||
         "2b8f4310-f2de-455d-b608-dd49cab1ebc3",
       onboardWalletSelect: {
-        wallets: [
-          { walletName: "metamask", preferred: true },
-        ],
+        wallets: [{ walletName: "metamask", preferred: true }],
       },
       walletCheck: [
         { checkName: "connect" },

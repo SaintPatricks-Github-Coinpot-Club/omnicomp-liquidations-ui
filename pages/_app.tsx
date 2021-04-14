@@ -17,9 +17,7 @@ interface IProps {
 const WithStateContainerProviders = ({ children }: IProps) => (
   <ApolloProvider client={client}>
     <Connection.Provider>
-      <SubGraph.Provider>
-        {children}
-      </SubGraph.Provider>
+      <SubGraph.Provider>{children}</SubGraph.Provider>
     </Connection.Provider>
   </ApolloProvider>
 );

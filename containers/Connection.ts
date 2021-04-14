@@ -43,8 +43,8 @@ function useConnection() {
             setProvider(ethersProvider);
 
             const _network = await ethersProvider.getNetwork();
-            if (_network.chainId === 56 && _network.name === 'unknown') {
-              _network.name = 'BSC';
+            if (_network.chainId === 56 && _network.name === "unknown") {
+              _network.name = "BSC";
             }
             setNetwork(_network);
             window.localStorage.setItem("selectedWallet", wallet.name);

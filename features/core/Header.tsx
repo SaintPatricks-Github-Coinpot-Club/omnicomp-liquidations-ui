@@ -67,10 +67,7 @@ const Header = () => {
     <Box display="flex" justifyContent="space-between" alignItems="center">
       <Box>
         <a href="https://omnicomp.eth.link/" target="_blank">
-          <img
-            src="/brand/omnicomp.png"
-            style={{ maxWidth: "180px" }}
-          />
+          <img src="/brand/omnicomp.png" style={{ maxWidth: "180px" }} />
         </a>
       </Box>
       <Box display="flex" alignItems="center">

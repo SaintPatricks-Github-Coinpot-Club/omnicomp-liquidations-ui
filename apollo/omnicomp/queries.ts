@@ -2,13 +2,7 @@ import { gql } from "@apollo/client";
 
 export const UNDERWATER_ACCOUNTS = gql`
   query underwaterAcounts {
-    accounts (
-      first: 1000,
-      where: {
-        hasBorrowed: true
-      }
-    )
-    {
+    accounts(first: 1000, where: { hasBorrowed: true }) {
       id
       hasBorrowed
       health
@@ -27,6 +21,6 @@ export const UNDERWATER_ACCOUNTS = gql`
         lifetimeSupplyInterestAccrued
         lifetimeBorrowInterestAccrued
       }
-    } 
+    }
   }
 `;

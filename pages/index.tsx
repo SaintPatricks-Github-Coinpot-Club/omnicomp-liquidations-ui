@@ -19,7 +19,6 @@ import Header from "../features/core/Header";
 import Footer from "../features/core/Footer";
 import Test from "../features/Test";
 
-
 const StyledTabs = styled(Tabs)`
   & .MuiTabs-flexContainer {
     border-bottom: 1px solid #999;
@@ -32,7 +31,6 @@ const StyledTabs = styled(Tabs)`
 `;
 
 export default function Index() {
-
   return (
     <Container maxWidth={"md"}>
       <Box py={4}>
@@ -40,7 +38,6 @@ export default function Index() {
         <Test />
         <Footer />
       </Box>
-
     </Container>
   );
 }

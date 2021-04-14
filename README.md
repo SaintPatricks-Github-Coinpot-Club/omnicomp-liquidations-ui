@@ -1,6 +1,5 @@
 # OmniCOMP Liquidations UI
 
-
 ## Install dependencies
 
 `yarn`
