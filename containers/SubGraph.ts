@@ -4,6 +4,9 @@ import { useQuery } from "@apollo/client";
 
 import { UNDERWATER_ACCOUNTS } from "../apollo/omnicomp/queries";
 
+const MIN_HEALTH = 0;
+const MAX_HEALTH = 0.95;
+
 const useSubGraph = () => {
   const {
     loading: accountsLoading,
@@ -14,11 +17,25 @@ const useSubGraph = () => {
     pollInterval: 10000,
   });
 
-  const [accounts, setAccounts] = useState<[] | null>(null);
+  const [allUnhealthyAccounts, setAllUnhealthyAccounts] = useState<[] | null>(
+    null
+  );
+  const [filteredUnhealthyAccounts, setFilteredUnhealthyAccounts] = useState<
+    [] | null
+  >(null);
 
   const queryAccounts = () => {
     if (accountsData) {
-      setAccounts(accountsData.accounts);
+      setAllUnhealthyAccounts(accountsData.accounts);
+    }
+  };
+
+  const filterAccounts = () => {
+    if (allUnhealthyAccounts) {
+      const filtered: any = allUnhealthyAccounts.filter(
+        (acc: any) => acc.health > MIN_HEALTH && acc.health < MAX_HEALTH
+      );
+      setFilteredUnhealthyAccounts(filtered);
     }
   };
 
@@ -26,8 +43,13 @@ const useSubGraph = () => {
     queryAccounts();
   }, [accountsData]);
 
+  useEffect(() => {
+    filterAccounts();
+  }, [allUnhealthyAccounts]);
+
   return {
-    accounts,
+    allUnhealthyAccounts,
+    filteredUnhealthyAccounts,
   };
 };
 
