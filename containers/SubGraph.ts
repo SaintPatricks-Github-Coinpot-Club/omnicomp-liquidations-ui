@@ -4,8 +4,8 @@ import { useQuery } from "@apollo/client";
 
 import { UNDERWATER_ACCOUNTS } from "../apollo/omnicomp/queries";
 
-const MIN_HEALTH = 0;
-const MAX_HEALTH = 0.95;
+const MIN_HEALTH = 0.001;
+const MAX_HEALTH = 0.999;
 
 const useSubGraph = () => {
   const {
@@ -35,7 +35,8 @@ const useSubGraph = () => {
       const filtered: any = allUnhealthyAccounts.filter(
         (acc: any) => acc.health > MIN_HEALTH && acc.health < MAX_HEALTH
       );
-      setFilteredUnhealthyAccounts(filtered);
+      const sorted = filtered.sort((a: any, b: any) => a.health - b.health);
+      setFilteredUnhealthyAccounts(sorted);
     }
   };
 

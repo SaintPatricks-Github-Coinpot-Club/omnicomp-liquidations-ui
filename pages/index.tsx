@@ -1,41 +1,43 @@
-import { useState, useEffect } from "react";
-import styled from "styled-components";
-import {
-  Container,
-  Box,
-  Typography,
-  Tab,
-  Tabs,
-  Hidden,
-  Button,
-  IconButton,
-  Menu,
-  MenuItem,
-  Grid,
-} from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
+import { Container, Box } from "@material-ui/core";
+
+import Connection from "../containers/Connection";
 
 import Header from "../features/core/Header";
 import Footer from "../features/core/Footer";
-import Test from "../features/Test";
-
-const StyledTabs = styled(Tabs)`
-  & .MuiTabs-flexContainer {
-    border-bottom: 1px solid #999;
-    width: 200%;
-  }
-  & .Mui-selected {
-    font-weight: bold;
-  }
-  padding-bottom: 2rem;
-`;
+import NoWalletConnection from "../features/core/NoWalletConnection";
+import IncorrectNetwork from "../features/core/IncorrectNetwork";
+import AllAccounts from "../features/all-accounts/AllAccounts";
 
 export default function Index() {
+  const { network, userAddress } = Connection.useContainer();
+
+  if (!userAddress) {
+    return (
+      <Container maxWidth={"md"}>
+        <Box py={4}>
+          <Header />
+          <NoWalletConnection />
+          <Footer />
+        </Box>
+      </Container>
+    );
+  } else if (network?.chainId !== 56) {
+    return (
+      <Container maxWidth={"md"}>
+        <Box py={4}>
+          <Header />
+          <IncorrectNetwork />
+          <Footer />
+        </Box>
+      </Container>
+    );
+  }
+
   return (
-    <Container maxWidth={"md"}>
+    <Container>
       <Box py={4}>
         <Header />
-        <Test />
+        <AllAccounts />
         <Footer />
       </Box>
     </Container>
