@@ -12,6 +12,7 @@ import { Box, Typography } from "@material-ui/core";
 
 import { toBn, toBnFixed } from "../../utils/bn";
 import SubGraph from "../../containers/SubGraph";
+import AccountAddress from "../../containers/AccountAddress";
 
 interface Column {
   id: "id" | "totalCollateralValueInEth" | "totalBorrowValueInEth" | "health";
@@ -59,6 +60,7 @@ const AllAccounts = () => {
   const classes = useStyles();
 
   const { allAccounts: accounts } = SubGraph.useContainer();
+  const { setAccountAddress } = AccountAddress.useContainer();
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(20);
@@ -73,6 +75,10 @@ const AllAccounts = () => {
     ) => {
       setRowsPerPage(+event.target.value);
       setPage(0);
+    };
+
+    const handleClick = (value: string) => {
+      setAccountAddress(value === '' ? null : (value as string));
     };
 
     return (
@@ -106,7 +112,7 @@ const AllAccounts = () => {
                       {columns.map((column) => {
                         const value = account[column.id];
                         return (
-                          <TableCell key={column.id} align={column.align}>
+                          <TableCell key={column.id} align={column.align} onClick={() => handleClick(account.id)}>
                             {column.format && typeof value === "string"
                               ? column.format(value)
                               : (value || '-')}
