@@ -58,7 +58,7 @@ const useStyles = makeStyles({
 const AllAccounts = () => {
   const classes = useStyles();
 
-  const { filteredUnhealthyAccounts: accounts } = SubGraph.useContainer();
+  const { allAccounts: accounts } = SubGraph.useContainer();
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(20);
@@ -109,7 +109,7 @@ const AllAccounts = () => {
                           <TableCell key={column.id} align={column.align}>
                             {column.format && typeof value === "string"
                               ? column.format(value)
-                              : value}
+                              : (value || '-')}
                           </TableCell>
                         );
                       })}
