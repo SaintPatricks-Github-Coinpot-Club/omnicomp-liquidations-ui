@@ -78,7 +78,7 @@ const AllAccounts = () => {
     };
 
     const handleClick = (value: string) => {
-      setAccountAddress(value === '' ? null : (value as string));
+      setAccountAddress(value === "" ? null : (value as string));
     };
 
     return (
@@ -112,10 +112,14 @@ const AllAccounts = () => {
                       {columns.map((column) => {
                         const value = account[column.id];
                         return (
-                          <TableCell key={column.id} align={column.align} onClick={() => handleClick(account.id)}>
+                          <TableCell
+                            key={column.id}
+                            align={column.align}
+                            onClick={() => handleClick(account.id)}
+                          >
                             {column.format && typeof value === "string"
                               ? column.format(value)
-                              : (value || '-')}
+                              : value || "-"}
                           </TableCell>
                         );
                       })}

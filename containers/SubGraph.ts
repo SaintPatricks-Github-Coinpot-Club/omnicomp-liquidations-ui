@@ -26,12 +26,8 @@ const useSubGraph = () => {
     pollInterval: 10000,
   });
 
-  const [allAccounts, setAllAccounts] = useState<[] | null>(
-    null
-  );
-  const [allBorrowers, setAllBorrowers] = useState<[] | null>(
-    null
-  );
+  const [allAccounts, setAllAccounts] = useState<[] | null>(null);
+  const [allBorrowers, setAllBorrowers] = useState<[] | null>(null);
   const [filteredUnhealthyAccounts, setFilteredUnhealthyAccounts] = useState<
     [] | null
   >(null);
