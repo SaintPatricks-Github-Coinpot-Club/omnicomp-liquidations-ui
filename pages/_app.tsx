@@ -8,6 +8,7 @@ import { WithStylingProviders } from "../utils/styling";
 import Connection from "../containers/Connection";
 import SubGraph from "../containers/SubGraph";
 import AccountAddress from "../containers/AccountAddress";
+import ProtocolState from "../containers/ProtocolState";
 
 import { client } from "../apollo/client";
 
@@ -19,7 +20,9 @@ const WithStateContainerProviders = ({ children }: IProps) => (
   <ApolloProvider client={client}>
     <Connection.Provider>
       <SubGraph.Provider>
-        <AccountAddress.Provider>{children}</AccountAddress.Provider>
+        <AccountAddress.Provider>
+          <ProtocolState.Provider>{children}</ProtocolState.Provider>
+        </AccountAddress.Provider>
       </SubGraph.Provider>
     </Connection.Provider>
   </ApolloProvider>
