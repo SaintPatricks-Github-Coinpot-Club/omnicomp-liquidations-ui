@@ -9,6 +9,7 @@ import Connection from "../containers/Connection";
 import SubGraph from "../containers/SubGraph";
 import AccountAddress from "../containers/AccountAddress";
 import ProtocolState from "../containers/ProtocolState";
+import UserState from "../containers/UserState";
 
 import { client } from "../apollo/client";
 
@@ -21,7 +22,9 @@ const WithStateContainerProviders = ({ children }: IProps) => (
     <Connection.Provider>
       <SubGraph.Provider>
         <AccountAddress.Provider>
-          <ProtocolState.Provider>{children}</ProtocolState.Provider>
+          <ProtocolState.Provider>
+            <UserState.Provider>{children}</UserState.Provider>
+          </ProtocolState.Provider>
         </AccountAddress.Provider>
       </SubGraph.Provider>
     </Connection.Provider>

@@ -23,6 +23,7 @@ interface CTokenState {
   underlyingDecimals: string | null;
   price: string | null;
   underlyingSymbol: string | null;
+  exchangeRateStored: string | null;
 }
 
 // const initState = {
@@ -38,6 +39,7 @@ const cTokenInitState = {
   underlyingDecimals: null,
   price: null,
   underlyingSymbol: null,
+  exchangeRateStored: null,
 };
 
 const useContractState = () => {
@@ -47,12 +49,11 @@ const useContractState = () => {
   const [Oracle, setOracle] = useState<ethers.Contract | null>(null);
   const [cTokenStates, setCTokenStates] = useState<{
     [address: string]: CTokenState;
-  }>({});
+  } | null>(null);
   const [cTokenAddresses, setCTokenAddresses] = useState<string[] | null>(null);
 
   // get state
   const queryState = async () => {
-    // setCTokenState(initState);
     if (Comptroller !== null && signer !== null) {
       // have to do this ugly thing because we want to call in parallel
       const res = await Promise.all([
@@ -79,7 +80,7 @@ const useContractState = () => {
     // Created a copy (deep copy) mechanism to overcome the Closure issue of useState
     if (cTokenAddresses) {
       // temp holder for states
-      let copyCTokenStates = cTokenStates;
+      let copyCTokenStates = {};
 
       cTokenAddresses.forEach(async (cTokenAddr) => {
         const cTokenData = await fetchCTokenData(cTokenAddr);
@@ -118,6 +119,7 @@ const useContractState = () => {
         UnderlyingI.decimals(),
         CTokenI.decimals(),
         UnderlyingI.symbol(),
+        CTokenI.exchangeRateStored(),
       ]);
 
       cToken.address = cTokenAddr;
@@ -126,6 +128,7 @@ const useContractState = () => {
       cToken.underlyingDecimals = toBnFixed(res[2]);
       cToken.cTokenDecimals = toBnFixed(res[3]);
       cToken.underlyingSymbol = res[4];
+      cToken.exchangeRateStored = toBnFixed(res[5]);
 
       const decimalDiff = 36 - parseFloat(cToken.underlyingDecimals as string);
       cToken.price = toBn(priceRaw).div(toBn(10).pow(decimalDiff)).toFixed();
@@ -162,7 +165,7 @@ const useContractState = () => {
     }
   }, [block$]);
 
-  return { cTokenStates };
+  return { Comptroller, cTokenStates };
 };
 
 const ProtocolState = createContainer(useContractState);

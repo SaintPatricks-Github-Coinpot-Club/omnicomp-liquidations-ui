@@ -1,13 +1,13 @@
 import { BigNumber } from "bignumber.js";
-BigNumber.config({ ROUNDING_MODE: BigNumber.ROUND_DOWN });
+import { toBn } from "./bn";
 
 export const weiToNum = (
   amount: string | number | BigNumber,
   decimals: string | number | BigNumber
 ) => {
-  const amt = new BigNumber(amount);
-  const dec = new BigNumber(decimals);
-  const ten = new BigNumber(10);
+  const amt = toBn(amount);
+  const dec = toBn(decimals);
+  const ten = toBn(10);
 
   const result = amt.div(ten.pow(dec));
   return result.toFixed();
@@ -17,10 +17,10 @@ export const numToWei = (
   amount: string | number | BigNumber,
   decimals: string | number | BigNumber
 ) => {
-  const amt = new BigNumber(amount);
-  const dec = new BigNumber(decimals);
-  const ten = new BigNumber(10);
+  const amt = toBn(amount);
+  const dec = toBn(decimals);
+  const ten = toBn(10);
 
   const result = amt.times(ten.pow(dec));
-  return result.toFixed(0, 1);
+  return result.toFixed(0, 1); // rounding mode: Round_down
 };
