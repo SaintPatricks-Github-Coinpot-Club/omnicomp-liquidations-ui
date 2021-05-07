@@ -5,6 +5,7 @@ import SubGraph from "../../containers/SubGraph";
 import AccountAddress from "../../containers/AccountAddress";
 
 import InvalidAccount from "./InvalidAccount";
+import AccountDetails from "./AccountDetails";
 
 const Account = () => {
   const { allAccounts } = SubGraph.useContainer();
@@ -18,7 +19,7 @@ const Account = () => {
     if (account === undefined) {
       return <InvalidAccount />;
     }
-    return <i>Account Component {accountAddress}</i>;
+    return <AccountDetails />;
   } else {
     return (
       <Box py={2} textAlign="center">
