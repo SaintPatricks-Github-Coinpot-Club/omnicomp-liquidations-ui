@@ -54,7 +54,7 @@ const useSubGraph = () => {
 
   useEffect(() => {
     queryAccounts();
-  }, [accountsData]);
+  }, [allAccountsData, accountsData]);
 
   useEffect(() => {
     filterAccounts();
