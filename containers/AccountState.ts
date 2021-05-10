@@ -19,20 +19,12 @@ interface AccountCTokenState {
   borrowBalanceUsd: string | null;
 }
 
-interface AccountGlobalState {
-  accountLiquidity: string | null;
-}
-
 const accountCTokenInitState = {
   address: null,
   supplyBalance: null,
   supplyBalanceUsd: null,
   borrowBalance: null,
   borrowBalanceUsd: null,
-};
-
-const accountGlobalInitState = {
-  accountLiquidity: null,
 };
 
 const useContractState = () => {
@@ -43,10 +35,6 @@ const useContractState = () => {
   const [accountCTokenState, setAccountCTokenState] = useState<{
     [address: string]: AccountCTokenState;
   } | null>(null);
-  const [
-    accountGlobalState,
-    setAccountGlobalState,
-  ] = useState<AccountGlobalState | null>(null);
   const [accountAssetsIn, setAccountAssetsIn] = useState<string[] | null>(null);
 
   // get state
@@ -54,21 +42,6 @@ const useContractState = () => {
     if (Comptroller !== null && accountAddress !== null) {
       const accountAssetsIn = await Comptroller.getAssetsIn(accountAddress);
       setAccountAssetsIn(accountAssetsIn);
-
-      const newAccountGlobalState: AccountGlobalState = accountGlobalInitState;
-      const liquidityData = await Comptroller.getAccountLiquidity(
-        accountAddress
-      );
-      if (toBn(liquidityData[0]).isZero()) {
-        if (toBn(liquidityData[1]).isGreaterThan(0)) {
-          newAccountGlobalState.accountLiquidity = toBnFixed(liquidityData[1]);
-        } else if (toBn(liquidityData[2]).isGreaterThan(0)) {
-          newAccountGlobalState.accountLiquidity = toBn(liquidityData[2])
-            .negated()
-            .toFixed();
-        }
-      }
-      setAccountGlobalState(newAccountGlobalState);
     }
   };
 
@@ -155,7 +128,7 @@ const useContractState = () => {
     }
   }, [block$]);
 
-  return { accountCTokenState, accountGlobalState };
+  return { accountCTokenState };
 };
 
 const AccountState = createContainer(useContractState);

@@ -11,6 +11,7 @@ import { Box, Typography } from "@material-ui/core";
 import styled from "styled-components";
 
 import ProtocolState from "../../containers/ProtocolState";
+import AllAccountState from "../../containers/AllAccountState";
 import AccountAddress from "../../containers/AccountAddress";
 import AccountState from "../../containers/AccountState";
 
@@ -33,24 +34,26 @@ const AccountDetails = () => {
   const classes = useStyles();
 
   const { cTokenStates } = ProtocolState.useContainer();
+  const { accountGlobalStates } = AllAccountState.useContainer();
   const { accountAddress } = AccountAddress.useContainer();
-  const {
-    accountCTokenState,
-    accountGlobalState,
-  } = AccountState.useContainer();
+  const { accountCTokenState } = AccountState.useContainer();
 
   if (
     cTokenStates !== null &&
     accountCTokenState !== null &&
     accountAddress !== null &&
-    accountGlobalState !== null
+    accountGlobalStates !== null
   ) {
     return (
       <Box>
         <Typography variant="subtitle1">Account {accountAddress}</Typography>
         <Status>
           <Label>State: </Label>
-          {Number(accountGlobalState.accountLiquidity) < 0 ? "Unsafe" : "Safe"}
+          {Number(
+            accountGlobalStates[accountAddress.toLowerCase()]?.accountLiquidity
+          ) < 0
+            ? "Unsafe"
+            : "Safe"}
         </Status>
         <br />
 

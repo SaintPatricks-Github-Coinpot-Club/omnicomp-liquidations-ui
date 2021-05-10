@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const ALL_ACCOUNTS = gql`
-  query underwaterAcounts {
+  query allAcounts {
     accounts(first: 1000) {
       id
       hasBorrowed
@@ -26,7 +26,7 @@ export const ALL_ACCOUNTS = gql`
 `;
 
 export const ALL_BORROWERS = gql`
-  query underwaterAcounts {
+  query borrowerAcounts {
     accounts(first: 1000, where: { hasBorrowed: true }) {
       id
       hasBorrowed

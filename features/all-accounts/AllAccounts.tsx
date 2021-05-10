@@ -12,6 +12,7 @@ import { Box, Typography } from "@material-ui/core";
 
 import { toBn, toBnFixed } from "../../utils/bn";
 import SubGraph from "../../containers/SubGraph";
+import AllAccountState from "../../containers/AllAccountState";
 import AccountAddress from "../../containers/AccountAddress";
 
 interface Column {
@@ -25,22 +26,8 @@ interface Column {
 const columns: Column[] = [
   { id: "id", label: "Address", minWidth: 170 },
   {
-    id: "totalCollateralValueInEth",
-    label: "Collateral Supplied ($)",
-    minWidth: 170,
-    align: "right",
-    format: (value: string) => toBn(value).toFixed(2),
-  },
-  {
-    id: "totalBorrowValueInEth",
-    label: "Minted ($)",
-    minWidth: 170,
-    align: "right",
-    format: (value: string) => toBn(value).toFixed(2),
-  },
-  {
     id: "health",
-    label: "Health Factor",
+    label: "Health Status",
     minWidth: 170,
     align: "right",
     format: (value: string) => toBn(value).toFixed(2),
@@ -60,12 +47,13 @@ const AllAccounts = () => {
   const classes = useStyles();
 
   const { allAccounts: accounts } = SubGraph.useContainer();
+  const { accountGlobalStates } = AllAccountState.useContainer();
   const { setAccountAddress } = AccountAddress.useContainer();
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(20);
 
-  if (accounts !== null) {
+  if (accounts !== null && accountGlobalStates !== null) {
     const handleChangePage = (event: unknown, newPage: number) => {
       setPage(newPage);
     };
@@ -108,21 +96,18 @@ const AllAccounts = () => {
                       role="checkbox"
                       tabIndex={-1}
                       key={account.id}
+                      onClick={() => handleClick(account.id)}
                     >
-                      {columns.map((column) => {
-                        const value = account[column.id];
-                        return (
-                          <TableCell
-                            key={column.id}
-                            align={column.align}
-                            onClick={() => handleClick(account.id)}
-                          >
-                            {column.format && typeof value === "string"
-                              ? column.format(value)
-                              : value || "-"}
-                          </TableCell>
-                        );
-                      })}
+                      <TableCell component="th" scope="row">
+                        {account.id}
+                      </TableCell>
+                      <TableCell align="right">
+                        {Number(
+                          accountGlobalStates[account.id]?.accountLiquidity
+                        ) < 0
+                          ? "Unsafe"
+                          : "Safe"}
+                      </TableCell>
                     </TableRow>
                   );
                 })}
