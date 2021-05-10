@@ -12,7 +12,7 @@ import styled from "styled-components";
 
 import ProtocolState from "../../containers/ProtocolState";
 import AccountAddress from "../../containers/AccountAddress";
-import UserState from "../../containers/UserState";
+import AccountState from "../../containers/AccountState";
 
 const useStyles = makeStyles({
   table: {
@@ -34,20 +34,23 @@ const AccountDetails = () => {
 
   const { cTokenStates } = ProtocolState.useContainer();
   const { accountAddress } = AccountAddress.useContainer();
-  const { userCTokenState, userGlobalState } = UserState.useContainer();
+  const {
+    accountCTokenState,
+    accountGlobalState,
+  } = AccountState.useContainer();
 
   if (
     cTokenStates !== null &&
-    userCTokenState !== null &&
+    accountCTokenState !== null &&
     accountAddress !== null &&
-    userGlobalState !== null
+    accountGlobalState !== null
   ) {
     return (
       <Box>
         <Typography variant="subtitle1">Account {accountAddress}</Typography>
         <Status>
           <Label>State: </Label>
-          {Number(userGlobalState.accountLiquidity) < 0 ? "Unsafe" : "Safe"}
+          {Number(accountGlobalState.accountLiquidity) < 0 ? "Unsafe" : "Safe"}
         </Status>
         <br />
 
@@ -61,18 +64,18 @@ const AccountDetails = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {Object.keys(userCTokenState).map(
+              {Object.keys(accountCTokenState).map(
                 (state, index) =>
-                  userCTokenState[state].supplyBalance !== "0" && (
+                  accountCTokenState[state].supplyBalance !== "0" && (
                     <TableRow key={state}>
                       <TableCell component="th" scope="row">
                         {cTokenStates[state].underlyingSymbol}
                       </TableCell>
                       <TableCell align="right">
-                        {userCTokenState[state].supplyBalance}
+                        {accountCTokenState[state].supplyBalance}
                       </TableCell>
                       <TableCell align="right">
-                        {userCTokenState[state].supplyBalanceUsd}
+                        {accountCTokenState[state].supplyBalanceUsd}
                       </TableCell>
                     </TableRow>
                   )
@@ -92,18 +95,18 @@ const AccountDetails = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {Object.keys(userCTokenState).map(
+              {Object.keys(accountCTokenState).map(
                 (state, index) =>
-                  userCTokenState[state].borrowBalance !== "0" && (
+                  accountCTokenState[state].borrowBalance !== "0" && (
                     <TableRow key={state}>
                       <TableCell component="th" scope="row">
                         {cTokenStates[state].underlyingSymbol}
                       </TableCell>
                       <TableCell align="right">
-                        {userCTokenState[state].borrowBalance}
+                        {accountCTokenState[state].borrowBalance}
                       </TableCell>
                       <TableCell align="right">
-                        {userCTokenState[state].borrowBalanceUsd}
+                        {accountCTokenState[state].borrowBalanceUsd}
                       </TableCell>
                     </TableRow>
                   )

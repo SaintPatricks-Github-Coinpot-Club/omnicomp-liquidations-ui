@@ -11,7 +11,7 @@ import Connection from "./Connection";
 import ProtocolState from "./ProtocolState";
 import AccountAddress from "./AccountAddress";
 
-interface UserCTokenState {
+interface AccountCTokenState {
   address: string | null;
   supplyBalance: string | null;
   supplyBalanceUsd: string | null;
@@ -19,11 +19,11 @@ interface UserCTokenState {
   borrowBalanceUsd: string | null;
 }
 
-interface UserGlobalState {
+interface AccountGlobalState {
   accountLiquidity: string | null;
 }
 
-const userCTokenInitState = {
+const accountCTokenInitState = {
   address: null,
   supplyBalance: null,
   supplyBalanceUsd: null,
@@ -31,7 +31,7 @@ const userCTokenInitState = {
   borrowBalanceUsd: null,
 };
 
-const userGlobalInitState = {
+const accountGlobalInitState = {
   accountLiquidity: null,
 };
 
@@ -40,13 +40,13 @@ const useContractState = () => {
   const { Comptroller, cTokenStates } = ProtocolState.useContainer();
   const { accountAddress } = AccountAddress.useContainer();
 
-  const [userCTokenState, setUserCTokenState] = useState<{
-    [address: string]: UserCTokenState;
+  const [accountCTokenState, setAccountCTokenState] = useState<{
+    [address: string]: AccountCTokenState;
   } | null>(null);
   const [
-    userGlobalState,
-    setUserGlobalState,
-  ] = useState<UserGlobalState | null>(null);
+    accountGlobalState,
+    setAccountGlobalState,
+  ] = useState<AccountGlobalState | null>(null);
   const [accountAssetsIn, setAccountAssetsIn] = useState<string[] | null>(null);
 
   // get state
@@ -55,20 +55,20 @@ const useContractState = () => {
       const accountAssetsIn = await Comptroller.getAssetsIn(accountAddress);
       setAccountAssetsIn(accountAssetsIn);
 
-      const newUserGlobalState: UserGlobalState = userGlobalInitState;
+      const newAccountGlobalState: AccountGlobalState = accountGlobalInitState;
       const liquidityData = await Comptroller.getAccountLiquidity(
         accountAddress
       );
       if (toBn(liquidityData[0]).isZero()) {
         if (toBn(liquidityData[1]).isGreaterThan(0)) {
-          newUserGlobalState.accountLiquidity = toBnFixed(liquidityData[1]);
+          newAccountGlobalState.accountLiquidity = toBnFixed(liquidityData[1]);
         } else if (toBn(liquidityData[2]).isGreaterThan(0)) {
-          newUserGlobalState.accountLiquidity = toBn(liquidityData[2])
+          newAccountGlobalState.accountLiquidity = toBn(liquidityData[2])
             .negated()
             .toFixed();
         }
       }
-      setUserGlobalState(newUserGlobalState);
+      setAccountGlobalState(newAccountGlobalState);
     }
   };
 
@@ -87,14 +87,14 @@ const useContractState = () => {
           );
           deepCopyCTokenStates[cTokenData.address] = cTokenData;
           copyCTokenStates = JSON.parse(JSON.stringify(deepCopyCTokenStates));
-          setUserCTokenState(copyCTokenStates);
+          setAccountCTokenState(copyCTokenStates);
         }
       });
     }
   };
 
   const fetchCTokenData = async (cTokenAddr: string) => {
-    const cToken: UserCTokenState = userCTokenInitState;
+    const cToken: AccountCTokenState = accountCTokenInitState;
     if (
       Comptroller !== null &&
       signer !== null &&
@@ -155,9 +155,9 @@ const useContractState = () => {
     }
   }, [block$]);
 
-  return { userCTokenState, userGlobalState };
+  return { accountCTokenState, accountGlobalState };
 };
 
-const UserState = createContainer(useContractState);
+const AccountState = createContainer(useContractState);
 
-export default UserState;
+export default AccountState;
