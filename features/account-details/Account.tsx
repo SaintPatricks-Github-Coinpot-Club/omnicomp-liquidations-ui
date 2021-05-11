@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
 import { Box, Typography } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import SubGraph from "../../containers/SubGraph";
 import AccountAddress from "../../containers/AccountAddress";
@@ -11,7 +12,7 @@ import AccountDetails from "./AccountDetails";
 
 const Account = () => {
   const { allAccounts } = SubGraph.useContainer();
-  const { accountAddress } = AccountAddress.useContainer();
+  const { accountAddress, setAccountAddress } = AccountAddress.useContainer();
   const { accountAssetsIn } = AccountState.useContainer();
 
   if (
@@ -30,7 +31,18 @@ const Account = () => {
     if (accountAssetsIn.length === 0) {
       return <NoAccountData />;
     }
-    return <AccountDetails />;
+
+    return (
+      <>
+        <Button onClick={() => setAccountAddress(null)}>
+          <ArrowBackIcon />
+          Back
+        </Button>
+        <br />
+        <br />
+        <AccountDetails />
+      </>
+    );
   } else {
     return (
       <Box py={2} textAlign="center">

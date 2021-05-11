@@ -112,6 +112,12 @@ const useContractState = () => {
     }
   };
 
+  // reset on account change
+  useEffect(() => {
+    setAccountCTokenState(null);
+    setAccountAssetsIn(null);
+  }, [accountAddress]);
+
   useEffect(() => {
     queryState();
   }, [Comptroller, accountAddress]);
