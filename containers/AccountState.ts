@@ -128,7 +128,7 @@ const useContractState = () => {
     }
   }, [block$]);
 
-  return { accountCTokenState };
+  return { accountCTokenState, accountAssetsIn };
 };
 
 const AccountState = createContainer(useContractState);

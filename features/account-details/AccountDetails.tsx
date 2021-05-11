@@ -44,6 +44,13 @@ const AccountDetails = () => {
     accountAddress !== null &&
     accountGlobalStates !== null
   ) {
+    const noSupply: boolean = !Object.keys(accountCTokenState).some(
+      (state, index) => accountCTokenState[state].supplyBalance !== "0"
+    );
+    const noBorrow: boolean = !Object.keys(accountCTokenState).some(
+      (state, index) => accountCTokenState[state].borrowBalance !== "0"
+    );
+
     return (
       <Box>
         <Typography variant="subtitle1">Account {accountAddress}</Typography>
@@ -85,6 +92,11 @@ const AccountDetails = () => {
               )}
             </TableBody>
           </Table>
+          {noSupply && (
+            <Typography align="center">
+              No Asset Supplied as Collateral
+            </Typography>
+          )}
         </TableContainer>
         <br />
         <br />
@@ -116,6 +128,7 @@ const AccountDetails = () => {
               )}
             </TableBody>
           </Table>
+          {noBorrow && <Typography align="center">No Asset Minted</Typography>}
         </TableContainer>
       </Box>
     );

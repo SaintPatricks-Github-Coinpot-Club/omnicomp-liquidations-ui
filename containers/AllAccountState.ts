@@ -58,6 +58,8 @@ const useContractState = () => {
           newAccountGlobalState.accountLiquidity = toBn(liquidityData[2])
             .negated()
             .toFixed();
+        } else {
+          newAccountGlobalState.accountLiquidity = toBnFixed("0");
         }
       }
 

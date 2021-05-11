@@ -54,6 +54,8 @@ const AllAccounts = () => {
   const [rowsPerPage, setRowsPerPage] = useState(20);
 
   if (accounts !== null && accountGlobalStates !== null) {
+    // const sortedAccounts = [...accounts].sort((a: any, b: any) => Number(accountGlobalStates[a.id]?.accountLiquidity) - Number(accountGlobalStates[b.id]?.accountLiquidity));
+
     const handleChangePage = (event: unknown, newPage: number) => {
       setPage(newPage);
     };

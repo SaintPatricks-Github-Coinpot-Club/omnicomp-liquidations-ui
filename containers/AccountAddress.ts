@@ -28,7 +28,8 @@ function useAccountAddress() {
   };
 
   return {
-    accountAddress: address ? ethers.utils.getAddress(address) : null,
+    accountAddress: address ? address.toLowerCase() : null,
+    accountAddressCS: address ? ethers.utils.getAddress(address) : null, // checksummed
     setAccountAddress,
     isValid: ethers.utils.isAddress(address || ""),
   };
