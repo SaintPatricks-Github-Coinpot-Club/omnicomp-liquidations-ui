@@ -165,7 +165,7 @@ const useContractState = () => {
     }
   }, [block$]);
 
-  return { Comptroller, cTokenStates };
+  return { Comptroller, cTokenAddresses, cTokenStates };
 };
 
 const ProtocolState = createContainer(useContractState);

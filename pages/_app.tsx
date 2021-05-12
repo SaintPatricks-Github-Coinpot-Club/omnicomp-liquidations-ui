@@ -11,6 +11,7 @@ import AccountAddress from "../containers/AccountAddress";
 import ProtocolState from "../containers/ProtocolState";
 import AllAccountState from "../containers/AllAccountState";
 import AccountState from "../containers/AccountState";
+import UserState from "../containers/UserState";
 
 import { client } from "../apollo/client";
 
@@ -25,7 +26,9 @@ const WithStateContainerProviders = ({ children }: IProps) => (
         <AccountAddress.Provider>
           <ProtocolState.Provider>
             <AllAccountState.Provider>
-              <AccountState.Provider>{children}</AccountState.Provider>
+              <AccountState.Provider>
+                <UserState.Provider>{children}</UserState.Provider>
+              </AccountState.Provider>
             </AllAccountState.Provider>
           </ProtocolState.Provider>
         </AccountAddress.Provider>

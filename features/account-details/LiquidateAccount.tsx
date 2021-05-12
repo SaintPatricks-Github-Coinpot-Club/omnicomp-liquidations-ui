@@ -163,7 +163,7 @@ const LiquidateAccount = () => {
                       shrink: true,
                     }}
                     InputProps={{
-                      startAdornment: (
+                      endAdornment: (
                         <InputAdornment position="start">
                           <Button>
                             <MaxLink>Max</MaxLink>
