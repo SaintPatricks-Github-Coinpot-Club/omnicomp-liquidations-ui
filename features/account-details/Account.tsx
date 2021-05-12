@@ -9,6 +9,7 @@ import AccountState from "../../containers/AccountState";
 import InvalidAccount from "./InvalidAccount";
 import NoAccountData from "./NoAccountData";
 import AccountDetails from "./AccountDetails";
+import LiquidateAccount from "./LiquidateAccount";
 
 const Account = () => {
   const { allAccounts } = SubGraph.useContainer();
@@ -41,6 +42,7 @@ const Account = () => {
         <br />
         <br />
         <AccountDetails />
+        <LiquidateAccount />
       </>
     );
   } else {

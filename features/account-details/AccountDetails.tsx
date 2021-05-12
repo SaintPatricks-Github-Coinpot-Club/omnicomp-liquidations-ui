@@ -133,7 +133,13 @@ const AccountDetails = () => {
       </Box>
     );
   } else {
-    return <></>;
+    return (
+      <Box py={2} textAlign="center">
+        <Typography>
+          <i>Fetching Account Data...</i>
+        </Typography>
+      </Box>
+    );
   }
 };
 
