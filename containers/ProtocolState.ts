@@ -24,6 +24,7 @@ interface CTokenState {
   price: string | null;
   underlyingSymbol: string | null;
   exchangeRateStored: string | null;
+  underlyingAddress: string | null;
 }
 
 // const initState = {
@@ -40,6 +41,7 @@ const cTokenInitState = {
   price: null,
   underlyingSymbol: null,
   exchangeRateStored: null,
+  underlyingAddress: null,
 };
 
 const useContractState = () => {
@@ -132,6 +134,7 @@ const useContractState = () => {
 
       const decimalDiff = 36 - parseFloat(cToken.underlyingDecimals as string);
       cToken.price = toBn(priceRaw).div(toBn(10).pow(decimalDiff)).toFixed();
+      cToken.underlyingAddress = underlyingAddr;
 
       return cToken;
     }

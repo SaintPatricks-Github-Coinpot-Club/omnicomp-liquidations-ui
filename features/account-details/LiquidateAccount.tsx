@@ -15,8 +15,19 @@ import {
   InputAdornment,
 } from "@material-ui/core";
 
+import { ethers } from "ethers";
+import erc20 from "@studydefi/money-legos/erc20";
+
+import CErc20ImmutableAbi from "../../abis/CErc20Immutable.json";
+import { createTxError } from "../../utils/ethTxErrorHandler";
+import { numToWei } from "../../utils/ethUnitParser";
+import { toBn } from "../../utils/bn";
+
 import ProtocolState from "../../containers/ProtocolState";
+import AccountAddress from "../../containers/AccountAddress";
 import AccountState from "../../containers/AccountState";
+import Connection from "../../containers/Connection";
+import UserState from "../../containers/UserState";
 
 const Container = styled.div`
   padding: 1rem;
@@ -59,14 +70,19 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const LiquidateAccount = () => {
+  const { signer } = Connection.useContainer();
   const { cTokenStates } = ProtocolState.useContainer();
+  const { accountAddress } = AccountAddress.useContainer();
   const { accountCTokenState } = AccountState.useContainer();
+  const { userState } = UserState.useContainer();
 
   const classes = useStyles();
   const [collateralAssetSelect, setCollateralAssetSelect] = useState<string>(
     ""
   );
   const [mintedAssetSelect, setMintedAssetSelect] = useState<string>("");
+  const [inputRepayAmt, setInputRepayAmt] = useState<string>("0");
+  const [error, setError] = useState<Error | null>(null);
 
   const handleCollateralChange = (event: any) => {
     setCollateralAssetSelect(event.target.value);
@@ -76,7 +92,65 @@ const LiquidateAccount = () => {
     setMintedAssetSelect(event.target.value);
   };
 
-  if (accountCTokenState !== null && cTokenStates !== null) {
+  const handleInputChange = (input: string) => {
+    setInputRepayAmt(input);
+  };
+
+  if (
+    accountCTokenState !== null &&
+    cTokenStates !== null &&
+    userState !== null &&
+    signer !== null &&
+    accountAddress !== null
+  ) {
+    const setAllowance = async (cTokenAddress: string) => {
+      setError(null);
+      try {
+        const underlyingAddr = cTokenStates[cTokenAddress].underlyingAddress;
+        if (underlyingAddr) {
+          const instance = new ethers.Contract(
+            underlyingAddr,
+            erc20.abi,
+            signer
+          );
+          const tx = await instance.approve(
+            cTokenAddress,
+            ethers.constants.MaxUint256
+          );
+          await tx.wait();
+        }
+      } catch (error) {
+        console.error(error);
+        setError(createTxError(error));
+      }
+    };
+
+    const liquidateAcount = async () => {
+      setError(null);
+      try {
+        if (collateralAssetSelect !== "" && mintedAssetSelect !== "") {
+          const amount = numToWei(
+            inputRepayAmt,
+            toBn(cTokenStates[mintedAssetSelect].underlyingDecimals)
+          );
+          const CTokenI = new ethers.Contract(
+            mintedAssetSelect,
+            CErc20ImmutableAbi,
+            signer
+          );
+          const tx = await CTokenI.liquidateBorrow(
+            accountAddress,
+            amount,
+            collateralAssetSelect
+          );
+          await tx.wait(5);
+        }
+      } catch (error) {
+        console.error(error);
+        setError(createTxError(error));
+      }
+    };
+
     return (
       <Box py={4} textAlign="center">
         <Container>
@@ -137,8 +211,8 @@ const LiquidateAccount = () => {
             {`50 SYM`}
           </Status> */}
           <br />
-          <Grid container alignItems="center" alignContent="center">
-            <Grid item md={6}>
+          <Box alignItems="center" alignContent="center">
+            <Box>
               <InputElement>
                 <form style={{ width: "100%" }} noValidate autoComplete="off">
                   <TextField
@@ -149,10 +223,8 @@ const LiquidateAccount = () => {
                         ? cTokenStates[mintedAssetSelect].underlyingSymbol
                         : "Asset"
                     }
-                    value="0"
-                    // onChange={(e) =>
-                    //   handleChange(Number(e.target.value), true, true, true)
-                    // }
+                    value={inputRepayAmt}
+                    onChange={(e) => handleInputChange(e.target.value)}
                     variant="outlined"
                     inputProps={{ min: "0" }}
                     // error={isSynthBalOverflow}
@@ -164,18 +236,58 @@ const LiquidateAccount = () => {
                     }}
                     InputProps={{
                       endAdornment: (
-                        <InputAdornment position="start">
-                          <Button>
-                            <MaxLink>Max</MaxLink>
-                          </Button>
-                        </InputAdornment>
+                        <>
+                          {mintedAssetSelect !== "" && (
+                            <InputAdornment position="end">
+                              <Label>
+                                {toBn(
+                                  userState[mintedAssetSelect].underlyingBalance
+                                ).toFixed(3)}
+                              </Label>
+                            </InputAdornment>
+                          )}
+                          <InputAdornment position="start">
+                            <Button>
+                              <MaxLink>Max</MaxLink>
+                            </Button>
+                          </InputAdornment>
+                        </>
                       ),
                     }}
                   />
                 </form>
               </InputElement>
-            </Grid>
-          </Grid>
+              {mintedAssetSelect !== "" &&
+                userState[mintedAssetSelect].needAllowance && (
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    style={{ marginTop: "0.6rem" }}
+                    onClick={() => setAllowance(mintedAssetSelect)}
+                  >
+                    Unlock {cTokenStates[mintedAssetSelect].underlyingSymbol}
+                  </Button>
+                )}
+              {true && (
+                <Button
+                  type="submit"
+                  variant="contained"
+                  style={{ marginTop: "0.6rem" }}
+                  onClick={() => liquidateAcount()}
+                  disabled={mintedAssetSelect === ""}
+                >
+                  Liquidate
+                </Button>
+              )}
+            </Box>
+          </Box>
+          {error && (
+            <Box py={2}>
+              <Typography>
+                <span style={{ color: "red" }}>{error.message}</span>
+              </Typography>
+            </Box>
+          )}
         </Container>
       </Box>
     );
