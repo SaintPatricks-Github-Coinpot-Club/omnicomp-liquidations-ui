@@ -92,6 +92,7 @@ const LiquidateAccount = () => {
   };
 
   const handleInputChange = (input: string) => {
+    setError(null);
     setInputRepayAmt(input);
   };
 
@@ -103,6 +104,13 @@ const LiquidateAccount = () => {
     signer !== null &&
     accountAddress !== null
   ) {
+    const isInputOverflow =
+      mintedAssetSelect !== "" &&
+      Number(inputRepayAmt) >
+        Number(userState[mintedAssetSelect].underlyingBalance)
+        ? true
+        : false;
+
     const getMaxLiquidatableValueBN = (
       collateralAsset: string,
       mintedAsset: string
@@ -136,7 +144,8 @@ const LiquidateAccount = () => {
           );
         }
       }
-      return maxAllowed;
+      // retuning 10% less amount for safe side
+      return maxAllowed.times(0.9);
     };
 
     const handleMax = () => {
@@ -276,10 +285,8 @@ const LiquidateAccount = () => {
                     onChange={(e) => handleInputChange(e.target.value)}
                     variant="outlined"
                     inputProps={{ min: "0" }}
-                    // error={isSynthBalOverflow}
-                    // helperText={
-                    //   isSynthBalOverflow && `Insufficient Balance`
-                    // }
+                    error={isInputOverflow}
+                    helperText={isInputOverflow && `Insufficient Balance`}
                     InputLabelProps={{
                       shrink: true,
                     }}
@@ -312,7 +319,12 @@ const LiquidateAccount = () => {
                   variant="contained"
                   style={{ marginTop: "0.6rem" }}
                   onClick={() => liquidateAcount()}
-                  disabled={mintedAssetSelect === ""}
+                  disabled={
+                    mintedAssetSelect === "" ||
+                    collateralAssetSelect === "" ||
+                    inputRepayAmt === "" ||
+                    isInputOverflow
+                  }
                 >
                   Liquidate
                 </Button>
