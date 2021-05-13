@@ -9,7 +9,6 @@ import NativeSelect from "@material-ui/core/NativeSelect";
 import {
   Box,
   Typography,
-  Grid,
   TextField,
   Button,
   InputAdornment,
@@ -20,7 +19,7 @@ import erc20 from "@studydefi/money-legos/erc20";
 
 import CErc20ImmutableAbi from "../../abis/CErc20Immutable.json";
 import { createTxError } from "../../utils/ethTxErrorHandler";
-import { numToWei } from "../../utils/ethUnitParser";
+import { numToWei, weiToNum } from "../../utils/ethUnitParser";
 import { toBn } from "../../utils/bn";
 
 import ProtocolState from "../../containers/ProtocolState";
@@ -71,7 +70,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const LiquidateAccount = () => {
   const { signer } = Connection.useContainer();
-  const { cTokenStates } = ProtocolState.useContainer();
+  const { protocolState, cTokenStates } = ProtocolState.useContainer();
   const { accountAddress } = AccountAddress.useContainer();
   const { accountCTokenState } = AccountState.useContainer();
   const { userState } = UserState.useContainer();
@@ -98,11 +97,57 @@ const LiquidateAccount = () => {
 
   if (
     accountCTokenState !== null &&
+    protocolState !== null &&
     cTokenStates !== null &&
     userState !== null &&
     signer !== null &&
     accountAddress !== null
   ) {
+    const getMaxLiquidatableValueBN = (
+      collateralAsset: string,
+      mintedAsset: string
+    ) => {
+      let maxAllowed = toBn("0");
+      const closeFac = weiToNum(toBn(protocolState.closeFactor), 18);
+      const liqIncn = weiToNum(toBn(protocolState.liquidationIncentive), 18);
+
+      if (collateralAsset !== "" && mintedAsset !== "") {
+        // (Minted(Borrowed) asset USD value * close factor)
+        const calcAllowedFromMinted = toBn(
+          accountCTokenState[mintedAsset].borrowBalanceUsd
+        ).times(toBn(closeFac));
+
+        // this is a rare case but still needs to be handled
+        // (Collateral asset USD value / liquidation incentive)
+        const calcAllowedFromSupplied = toBn(
+          accountCTokenState[collateralAsset].supplyBalanceUsd
+        ).div(toBn(liqIncn));
+
+        // Get MIN of above calculated value (in underlying tokens)
+        if (
+          calcAllowedFromMinted.isLessThanOrEqualTo(calcAllowedFromSupplied)
+        ) {
+          maxAllowed = calcAllowedFromMinted.div(
+            toBn(cTokenStates[mintedAsset].price)
+          );
+        } else {
+          maxAllowed = calcAllowedFromSupplied.div(
+            toBn(cTokenStates[collateralAsset].price)
+          );
+        }
+      }
+      return maxAllowed;
+    };
+
+    const handleMax = () => {
+      setInputRepayAmt("0");
+      const maxAllowed = getMaxLiquidatableValueBN(
+        collateralAssetSelect,
+        mintedAssetSelect
+      );
+      setInputRepayAmt(maxAllowed.toFixed());
+    };
+
     const setAllowance = async (cTokenAddress: string) => {
       setError(null);
       try {
@@ -241,7 +286,7 @@ const LiquidateAccount = () => {
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="start">
-                          <Button>
+                          <Button onClick={() => handleMax()}>
                             <MaxLink>Max</MaxLink>
                           </Button>
                         </InputAdornment>

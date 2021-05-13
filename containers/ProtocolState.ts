@@ -10,11 +10,10 @@ import { ContractAddresses } from "../constants/ContractAddresses";
 import { toBn, toBnFixed } from "../utils/bn";
 import Connection from "./Connection";
 
-// interface ContractState {
-//   oracle: string | null;
-//   cTokens: string[] | null;
-//   cTokenState: { [cTokenAddress: string]: CTokenState[] } | null;
-// }
+interface ProtocolState {
+  closeFactor: string | null;
+  liquidationIncentive: string | null;
+}
 
 interface CTokenState {
   address: string | null;
@@ -26,12 +25,6 @@ interface CTokenState {
   exchangeRateStored: string | null;
   underlyingAddress: string | null;
 }
-
-// const initState = {
-//   oracle: null,
-//   cTokens: null,
-//   cTokenState: null,
-// };
 
 const cTokenInitState = {
   address: null,
@@ -53,6 +46,9 @@ const useContractState = () => {
     [address: string]: CTokenState;
   } | null>(null);
   const [cTokenAddresses, setCTokenAddresses] = useState<string[] | null>(null);
+  const [protocolState, setProtocolState] = useState<ProtocolState | null>(
+    null
+  );
 
   // get state
   const queryState = async () => {
@@ -61,6 +57,8 @@ const useContractState = () => {
       const res = await Promise.all([
         Comptroller.oracle(),
         Comptroller.getAllMarkets(),
+        Comptroller.closeFactorMantissa(),
+        Comptroller.liquidationIncentiveMantissa(),
       ]);
 
       const oracleIns = new ethers.Contract(res[0], PriceOracleOTLAbi, signer);
@@ -69,12 +67,11 @@ const useContractState = () => {
       const markets = res[1];
       setCTokenAddresses(markets);
 
-      // const newState: ContractState = {
-      //   oracle: res[0] as string,
-      //   cTokens: res[1],
-      //   cTokenState: null,
-      // };
-      // setState(newState);
+      const newState: ProtocolState = {
+        closeFactor: toBnFixed(res[2]),
+        liquidationIncentive: toBnFixed(res[3]),
+      };
+      setProtocolState(newState);
     }
   };
 
@@ -168,9 +165,9 @@ const useContractState = () => {
     }
   }, [block$]);
 
-  return { Comptroller, cTokenAddresses, cTokenStates };
+  return { Comptroller, cTokenAddresses, cTokenStates, protocolState };
 };
 
-const ProtocolState = createContainer(useContractState);
+const ProtocolState_ = createContainer(useContractState);
 
-export default ProtocolState;
+export default ProtocolState_;
