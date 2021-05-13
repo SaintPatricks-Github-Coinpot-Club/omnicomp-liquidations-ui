@@ -10,6 +10,8 @@ import Paper from "@material-ui/core/Paper";
 import { Box, Typography } from "@material-ui/core";
 import styled from "styled-components";
 
+import { toBn } from "../../utils/bn";
+
 import ProtocolState from "../../containers/ProtocolState";
 import AllAccountState from "../../containers/AllAccountState";
 import AccountAddress from "../../containers/AccountAddress";
@@ -51,6 +53,26 @@ const AccountDetails = () => {
       (state, index) => accountCTokenState[state].borrowBalance !== "0"
     );
 
+    const totalCollateralUsd = Object.keys(accountCTokenState)
+      .reduce(
+        (acc, currentValue) =>
+          toBn(acc).plus(
+            toBn(accountCTokenState[currentValue].supplyBalanceUsd)
+          ),
+        toBn("0")
+      )
+      .toFixed();
+
+    const totalMintedUsd = Object.keys(accountCTokenState)
+      .reduce(
+        (acc, currentValue) =>
+          toBn(acc).plus(
+            toBn(accountCTokenState[currentValue].borrowBalanceUsd)
+          ),
+        toBn("0")
+      )
+      .toFixed();
+
     return (
       <Box>
         <Typography variant="subtitle1">Account {accountAddress}</Typography>
@@ -61,6 +83,12 @@ const AccountDetails = () => {
           ) < 0
             ? "Unsafe"
             : "Safe"}
+        </Status>
+        <Status>
+          <Label>Total Collateral: </Label>${totalCollateralUsd}
+        </Status>
+        <Status>
+          <Label>Total Minted: </Label>${totalMintedUsd}
         </Status>
         <br />
 

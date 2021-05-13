@@ -194,16 +194,20 @@ const LiquidateAccount = () => {
           </FormControl>
           <br />
           <br />
-          {collateralAssetSelect !== "" && (
+          <Status>
+            <Label>Collateral Supplied by Account: </Label>
+            {collateralAssetSelect !== ""
+              ? `${accountCTokenState[collateralAssetSelect].supplyBalance} 
+              ${cTokenStates[collateralAssetSelect].underlyingSymbol}`
+              : "-"}
+          </Status>
+          {mintedAssetSelect !== "" && (
             <Status>
-              <Label>Collateral Supplied: </Label>
-              {accountCTokenState[collateralAssetSelect].supplyBalance}{" "}
-              {cTokenStates[collateralAssetSelect].underlyingSymbol}
-            </Status>
-          )}
-          {collateralAssetSelect === "" && (
-            <Status>
-              <Label>Collateral Supplied: </Label>-
+              <Label>
+                Your {cTokenStates[mintedAssetSelect].underlyingSymbol} Balance:{" "}
+              </Label>
+              {userState[mintedAssetSelect].underlyingBalance}{" "}
+              {cTokenStates[mintedAssetSelect].underlyingSymbol}
             </Status>
           )}
           {/* <Status>
@@ -236,22 +240,11 @@ const LiquidateAccount = () => {
                     }}
                     InputProps={{
                       endAdornment: (
-                        <>
-                          {mintedAssetSelect !== "" && (
-                            <InputAdornment position="end">
-                              <Label>
-                                {toBn(
-                                  userState[mintedAssetSelect].underlyingBalance
-                                ).toFixed(3)}
-                              </Label>
-                            </InputAdornment>
-                          )}
-                          <InputAdornment position="start">
-                            <Button>
-                              <MaxLink>Max</MaxLink>
-                            </Button>
-                          </InputAdornment>
-                        </>
+                        <InputAdornment position="start">
+                          <Button>
+                            <MaxLink>Max</MaxLink>
+                          </Button>
+                        </InputAdornment>
                       ),
                     }}
                   />

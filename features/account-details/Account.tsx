@@ -3,6 +3,7 @@ import Button from "@material-ui/core/Button";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import SubGraph from "../../containers/SubGraph";
+import AllAccountState from "../../containers/AllAccountState";
 import AccountAddress from "../../containers/AccountAddress";
 import AccountState from "../../containers/AccountState";
 
@@ -15,10 +16,12 @@ const Account = () => {
   const { allAccounts } = SubGraph.useContainer();
   const { accountAddress, setAccountAddress } = AccountAddress.useContainer();
   const { accountAssetsIn } = AccountState.useContainer();
+  const { accountGlobalStates } = AllAccountState.useContainer();
 
   if (
     allAccounts !== null &&
     accountAddress !== null &&
+    accountGlobalStates !== null &&
     accountAssetsIn !== null
   ) {
     const account = allAccounts.find(
@@ -42,7 +45,9 @@ const Account = () => {
         <br />
         <br />
         <AccountDetails />
-        <LiquidateAccount />
+        {Number(
+          accountGlobalStates[accountAddress.toLowerCase()]?.accountLiquidity
+        ) < 0 && <LiquidateAccount />}
       </>
     );
   } else {
