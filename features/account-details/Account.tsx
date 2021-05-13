@@ -29,11 +29,31 @@ const Account = () => {
     );
 
     if (account === undefined) {
-      return <InvalidAccount />;
+      return (
+        <>
+          <Button onClick={() => setAccountAddress(null)}>
+            <ArrowBackIcon />
+            Back
+          </Button>
+          <br />
+          <br />
+          <InvalidAccount />;
+        </>
+      );
     }
 
     if (accountAssetsIn.length === 0) {
-      return <NoAccountData />;
+      return (
+        <>
+          <Button onClick={() => setAccountAddress(null)}>
+            <ArrowBackIcon />
+            Back
+          </Button>
+          <br />
+          <br />
+          <NoAccountData />
+        </>
+      );
     }
 
     return (

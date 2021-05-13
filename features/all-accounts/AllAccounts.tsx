@@ -10,6 +10,9 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import { Box, Typography } from "@material-ui/core";
 
+import SearchBar from "material-ui-search-bar";
+import { ethers } from "ethers";
+
 import { toBn, toBnFixed } from "../../utils/bn";
 import SubGraph from "../../containers/SubGraph";
 import AllAccountState from "../../containers/AllAccountState";
@@ -52,6 +55,7 @@ const AllAccounts = () => {
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(20);
+  const [searchStr, setSearchStr] = useState("");
 
   if (accounts !== null && accountGlobalStates !== null) {
     // const sortedAccounts = [...accounts].sort((a: any, b: any) => Number(accountGlobalStates[a.id]?.accountLiquidity) - Number(accountGlobalStates[b.id]?.accountLiquidity));
@@ -71,8 +75,19 @@ const AllAccounts = () => {
       setAccountAddress(value === "" ? null : (value as string));
     };
 
+    const handleSearch = () => {
+      if (ethers.utils.isAddress(searchStr)) {
+        setAccountAddress(searchStr);
+      }
+    };
+
     return (
       <Paper className={classes.root}>
+        <SearchBar
+          value={searchStr}
+          onChange={(newValue) => setSearchStr(newValue)}
+          onRequestSearch={handleSearch}
+        />
         <TableContainer className={classes.container}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
