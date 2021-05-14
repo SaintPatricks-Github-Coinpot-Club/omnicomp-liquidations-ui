@@ -9,6 +9,8 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import { Box, Typography } from "@material-ui/core";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import SearchBar from "material-ui-search-bar";
 import { ethers } from "ethers";
@@ -54,11 +56,25 @@ const AllAccounts = () => {
   const { setAccountAddress } = AccountAddress.useContainer();
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(20);
+  const [rowsPerPage, setRowsPerPage] = useState(50);
   const [searchStr, setSearchStr] = useState("");
+  const [checked, setChecked] = useState(false);
 
   if (accounts !== null && accountGlobalStates !== null) {
-    // const sortedAccounts = [...accounts].sort((a: any, b: any) => Number(accountGlobalStates[a.id]?.accountLiquidity) - Number(accountGlobalStates[b.id]?.accountLiquidity));
+    const filteredAccounts = [...accounts].filter(
+      (a: any) => Number(accountGlobalStates[a.id]?.accountLiquidity) < 0
+    );
+    const sortedAccounts = [...filteredAccounts].sort(
+      (a: any, b: any) =>
+        Number(accountGlobalStates[a.id]?.accountLiquidity) -
+        Number(accountGlobalStates[b.id]?.accountLiquidity)
+    );
+
+    const toBeShownAccounts = checked ? sortedAccounts : accounts;
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setChecked(event.target.checked);
+    };
 
     const handleChangePage = (event: unknown, newPage: number) => {
       setPage(newPage);
@@ -88,6 +104,18 @@ const AllAccounts = () => {
           onChange={(newValue) => setSearchStr(newValue)}
           onRequestSearch={handleSearch}
         />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={checked}
+              onChange={handleChange}
+              name="checked"
+              color="primary"
+            />
+          }
+          label="Show Unhealthy Accounts Only"
+          labelPlacement="end"
+        />
         <TableContainer className={classes.container}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
@@ -104,7 +132,7 @@ const AllAccounts = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {accounts
+              {toBeShownAccounts
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((account: any) => {
                   return (
@@ -132,9 +160,9 @@ const AllAccounts = () => {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[20, 50, 100]}
+          rowsPerPageOptions={[50, 100, 200]}
           component="div"
-          count={accounts.length}
+          count={toBeShownAccounts.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}
