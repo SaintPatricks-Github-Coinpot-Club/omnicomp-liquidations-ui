@@ -18,6 +18,7 @@ import { ethers } from "ethers";
 import erc20 from "@studydefi/money-legos/erc20";
 
 import CErc20ImmutableAbi from "../../abis/CErc20Immutable.json";
+import { SCALE_18_BN } from "../../constants/Math";
 import { createTxError } from "../../utils/ethTxErrorHandler";
 import { numToWei, weiToNum } from "../../utils/ethUnitParser";
 import { toBn } from "../../utils/bn";
@@ -70,7 +71,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const LiquidateAccount = () => {
   const { signer } = Connection.useContainer();
-  const { protocolState, cTokenStates } = ProtocolState.useContainer();
+  const {
+    Comptroller,
+    protocolState,
+    cTokenStates,
+  } = ProtocolState.useContainer();
   const { accountAddress } = AccountAddress.useContainer();
   const { accountCTokenState } = AccountState.useContainer();
   const { userState } = UserState.useContainer();
@@ -81,6 +86,7 @@ const LiquidateAccount = () => {
   );
   const [mintedAssetSelect, setMintedAssetSelect] = useState<string>("");
   const [inputRepayAmt, setInputRepayAmt] = useState<string>("0");
+  const [outputCollateralAmt, setOutputCollateralAmt] = useState<string>("0");
   const [error, setError] = useState<Error | null>(null);
 
   const handleCollateralChange = (event: any) => {
@@ -89,11 +95,6 @@ const LiquidateAccount = () => {
 
   const handleMintedChange = (event: any) => {
     setMintedAssetSelect(event.target.value);
-  };
-
-  const handleInputChange = (input: string) => {
-    setError(null);
-    setInputRepayAmt(input);
   };
 
   if (
@@ -110,6 +111,59 @@ const LiquidateAccount = () => {
         Number(userState[mintedAssetSelect].underlyingBalance)
         ? true
         : false;
+
+    const outputCollateralAmtUsd =
+      collateralAssetSelect !== ""
+        ? toBn(outputCollateralAmt)
+            .times(toBn(cTokenStates[collateralAssetSelect].price))
+            .toFixed(2)
+        : "0";
+
+    const handleInputChange = async (input: string) => {
+      setError(null);
+      setInputRepayAmt(input);
+
+      const outputCollateral = await getCalcSeizeTokens(
+        collateralAssetSelect,
+        mintedAssetSelect,
+        input
+      );
+      setOutputCollateralAmt(toBn(outputCollateral).toFixed(3, 1));
+    };
+
+    const getCalcSeizeTokens = async (
+      collateralAsset: string,
+      mintedAsset: string,
+      amount: string
+    ) => {
+      if (
+        Comptroller !== null &&
+        collateralAsset !== "" &&
+        mintedAsset !== "" &&
+        amount !== ""
+      ) {
+        const amountInWei = numToWei(
+          amount,
+          toBn(cTokenStates[mintedAsset].underlyingDecimals)
+        );
+
+        const seizedKTokens = await Comptroller.liquidateCalculateSeizeTokens(
+          mintedAsset,
+          collateralAsset,
+          amountInWei
+        );
+
+        const divBy = SCALE_18_BN.times(
+          toBn(10).pow(toBn(cTokenStates[collateralAsset].underlyingDecimals))
+        );
+        const collateralAmount = toBn(seizedKTokens[1])
+          .times(toBn(cTokenStates[collateralAsset].exchangeRateStored))
+          .div(divBy);
+
+        return collateralAmount.toFixed();
+      }
+      return "0";
+    };
 
     const getMaxLiquidatableValueBN = (
       collateralAsset: string,
@@ -154,7 +208,7 @@ const LiquidateAccount = () => {
         collateralAssetSelect,
         mintedAssetSelect
       );
-      setInputRepayAmt(maxAllowed.toFixed());
+      handleInputChange(maxAllowed.toFixed());
     };
 
     const setAllowance = async (cTokenAddress: string) => {
@@ -264,10 +318,6 @@ const LiquidateAccount = () => {
               {cTokenStates[mintedAssetSelect].underlyingSymbol}
             </Status>
           )}
-          {/* <Status>
-            <Label>Max Collateral Liquidatable: </Label>
-            {`50 SYM`}
-          </Status> */}
           <br />
           <Box alignItems="center" alignContent="center">
             <Box>
@@ -302,6 +352,12 @@ const LiquidateAccount = () => {
                   />
                 </form>
               </InputElement>
+              <Status>
+                <Label>You will receive kTokens equivalent to </Label>
+                {inputRepayAmt !== "0"
+                  ? `~${outputCollateralAmt} ${cTokenStates[collateralAssetSelect].underlyingSymbol} ($${outputCollateralAmtUsd})`
+                  : "-"}
+              </Status>
               {mintedAssetSelect !== "" &&
                 userState[mintedAssetSelect].needAllowance && (
                   <Button
@@ -313,22 +369,21 @@ const LiquidateAccount = () => {
                     Unlock {cTokenStates[mintedAssetSelect].underlyingSymbol}
                   </Button>
                 )}
-              {true && (
-                <Button
-                  type="submit"
-                  variant="contained"
-                  style={{ marginTop: "0.6rem" }}
-                  onClick={() => liquidateAcount()}
-                  disabled={
-                    mintedAssetSelect === "" ||
-                    collateralAssetSelect === "" ||
-                    inputRepayAmt === "" ||
-                    isInputOverflow
-                  }
-                >
-                  Liquidate
-                </Button>
-              )}
+              <Button
+                type="submit"
+                variant="contained"
+                style={{ marginTop: "0.6rem" }}
+                onClick={() => liquidateAcount()}
+                disabled={
+                  mintedAssetSelect === "" ||
+                  collateralAssetSelect === "" ||
+                  inputRepayAmt === "" ||
+                  inputRepayAmt === "0" ||
+                  isInputOverflow
+                }
+              >
+                Liquidate
+              </Button>
             </Box>
           </Box>
           {error && (
