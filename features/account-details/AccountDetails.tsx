@@ -98,7 +98,7 @@ const AccountDetails = () => {
               <TableRow>
                 <TableCell>Collateral Assets</TableCell>
                 <TableCell align="right">Amount</TableCell>
-                <TableCell align="right">Amount&nbsp;($)</TableCell>
+                <TableCell align="right">Value&nbsp;($)</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -134,7 +134,7 @@ const AccountDetails = () => {
               <TableRow>
                 <TableCell>Minted Assets</TableCell>
                 <TableCell align="right">Amount</TableCell>
-                <TableCell align="right">Amount&nbsp;($)</TableCell>
+                <TableCell align="right">Value&nbsp;($)</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

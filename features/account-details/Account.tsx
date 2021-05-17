@@ -2,45 +2,45 @@ import { Box, Typography } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
-import SubGraph from "../../containers/SubGraph";
+// import SubGraph from "../../containers/SubGraph";
 import AllAccountState from "../../containers/AllAccountState";
 import AccountAddress from "../../containers/AccountAddress";
 import AccountState from "../../containers/AccountState";
 
-import InvalidAccount from "./InvalidAccount";
+// import InvalidAccount from "./InvalidAccount";
 import NoAccountData from "./NoAccountData";
 import AccountDetails from "./AccountDetails";
 import LiquidateAccount from "./LiquidateAccount";
 
 const Account = () => {
-  const { allAccounts } = SubGraph.useContainer();
+  // const { allAccounts } = SubGraph.useContainer();
   const { accountAddress, setAccountAddress } = AccountAddress.useContainer();
   const { accountAssetsIn } = AccountState.useContainer();
   const { accountGlobalStates } = AllAccountState.useContainer();
 
   if (
-    allAccounts !== null &&
+    // allAccounts !== null &&
     accountAddress !== null &&
     accountGlobalStates !== null &&
     accountAssetsIn !== null
   ) {
-    const account = allAccounts.find(
-      (account: any) => account.id === accountAddress.toLowerCase()
-    );
+    // const account = allAccounts.find(
+    //   (account: any) => account.id === accountAddress.toLowerCase()
+    // );
 
-    if (account === undefined) {
-      return (
-        <>
-          <Button onClick={() => setAccountAddress(null)}>
-            <ArrowBackIcon />
-            Back
-          </Button>
-          <br />
-          <br />
-          <InvalidAccount />;
-        </>
-      );
-    }
+    // if (account === undefined) {
+    //   return (
+    //     <>
+    //       <Button onClick={() => setAccountAddress(null)}>
+    //         <ArrowBackIcon />
+    //         Back
+    //       </Button>
+    //       <br />
+    //       <br />
+    //       <InvalidAccount />
+    //     </>
+    //   );
+    // }
 
     if (accountAssetsIn.length === 0) {
       return (
