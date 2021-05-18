@@ -27,21 +27,17 @@ const useAllAccountState = () => {
 
   const queryState = async () => {
     if (Comptroller !== null && allAccounts !== null) {
-      // temp holder for states
-      let copyAccountGlobalStates = {};
-
       allAccounts.forEach(async (account: any) => {
         const accountData = await fetchAccountGlobalState(account.id);
-        if (accountData?.address) {
-          // created a deep copy
-          const deepCopyAccountGlobalStates = JSON.parse(
-            JSON.stringify(copyAccountGlobalStates)
-          );
-          deepCopyAccountGlobalStates[accountData.address] = accountData;
-          copyAccountGlobalStates = JSON.parse(
-            JSON.stringify(deepCopyAccountGlobalStates)
-          );
-          setAccountGlobalStates(copyAccountGlobalStates);
+        if (accountData && accountData.address) {
+          setAccountGlobalStates((prevState) => {
+            return {
+              ...prevState,
+              [accountData.address as string]: JSON.parse(
+                JSON.stringify(accountData)
+              ),
+            };
+          });
         }
       });
     }

@@ -60,21 +60,18 @@ const useAccountState = () => {
   };
 
   const fetchAllCTokenData = () => {
-    // Created a copy (deep copy) mechanism to overcome the Closure issue of useState
     if (accountAssetsIn) {
-      // temp holder for states
-      let copyCTokenStates = {};
-
       accountAssetsIn.forEach(async (cTokenAddr) => {
         const cTokenData = await fetchCTokenData(cTokenAddr);
-        if (cTokenData?.address) {
-          // created a deep copy
-          const deepCopyCTokenStates = JSON.parse(
-            JSON.stringify(copyCTokenStates)
-          );
-          deepCopyCTokenStates[cTokenData.address] = cTokenData;
-          copyCTokenStates = JSON.parse(JSON.stringify(deepCopyCTokenStates));
-          setAccountCTokenState(copyCTokenStates);
+        if (cTokenData && cTokenData.address) {
+          setAccountCTokenState((prevState) => {
+            return {
+              ...prevState,
+              [cTokenData.address as string]: JSON.parse(
+                JSON.stringify(cTokenData)
+              ),
+            };
+          });
         }
       });
     }

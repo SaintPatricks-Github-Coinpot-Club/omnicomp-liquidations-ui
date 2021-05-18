@@ -76,21 +76,18 @@ const useProtocolState = () => {
   };
 
   const fetchAllCTokenData = () => {
-    // Created a copy (deep copy) mechanism to overcome the Closure issue of useState
     if (cTokenAddresses) {
-      // temp holder for states
-      let copyCTokenStates = {};
-
       cTokenAddresses.forEach(async (cTokenAddr) => {
         const cTokenData = await fetchCTokenData(cTokenAddr);
-        if (cTokenData?.address) {
-          // created a deep copy
-          const deepCopyCTokenStates = JSON.parse(
-            JSON.stringify(copyCTokenStates)
-          );
-          deepCopyCTokenStates[cTokenData.address] = cTokenData;
-          copyCTokenStates = JSON.parse(JSON.stringify(deepCopyCTokenStates));
-          setCTokenStates(copyCTokenStates);
+        if (cTokenData && cTokenData.address) {
+          setCTokenStates((prevState) => {
+            return {
+              ...prevState,
+              [cTokenData.address as string]: JSON.parse(
+                JSON.stringify(cTokenData)
+              ),
+            };
+          });
         }
       });
     }

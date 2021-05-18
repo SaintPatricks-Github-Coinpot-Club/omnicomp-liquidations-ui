@@ -30,19 +30,16 @@ const useUserState = () => {
   } | null>(null);
 
   const queryState = () => {
-    // Created a copy (deep copy) mechanism to overcome the Closure issue of useState
     if (cTokenAddresses) {
-      // temp holder for states
-      let copyUserStates = {};
-
       cTokenAddresses.forEach(async (cTokenAddr) => {
         const data = await fetchUserData(cTokenAddr);
-        if (data?.cTokenAddress) {
-          // created a deep copy
-          const deepCopyUserStates = JSON.parse(JSON.stringify(copyUserStates));
-          deepCopyUserStates[data.cTokenAddress] = data;
-          copyUserStates = JSON.parse(JSON.stringify(deepCopyUserStates));
-          setUserState(copyUserStates);
+        if (data && data.cTokenAddress) {
+          setUserState((prevState) => {
+            return {
+              ...prevState,
+              [data.cTokenAddress as string]: JSON.parse(JSON.stringify(data)),
+            };
+          });
         }
       });
     }
