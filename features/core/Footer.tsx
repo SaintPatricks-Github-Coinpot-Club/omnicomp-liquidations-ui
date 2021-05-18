@@ -1,4 +1,4 @@
-import { Box, Typography, IconButton } from "@material-ui/core";
+import { Box, IconButton } from "@material-ui/core";
 
 const Footer = () => {
   return (
@@ -6,7 +6,7 @@ const Footer = () => {
       <IconButton
         style={{ marginRight: `8px` }}
         target="_blank"
-        href=""
+        href="https://github.com/omni-corp-protocols/omnicomp-liquidations-ui"
         size="medium"
       >
         <img
@@ -17,7 +17,7 @@ const Footer = () => {
       <IconButton
         style={{ marginRight: `8px` }}
         target="_blank"
-        href=""
+        href="https://twitter.com/omnic_pro"
         size="medium"
       >
         <img
@@ -25,7 +25,7 @@ const Footer = () => {
           className="social-media-icons"
         />
       </IconButton>
-      <IconButton
+      {/* <IconButton
         style={{ marginRight: `8px` }}
         target="_blank"
         href=""
@@ -35,11 +35,11 @@ const Footer = () => {
           src="/social-media-icons/discord.png"
           className="social-media-icons"
         />
-      </IconButton>
+      </IconButton> */}
       <IconButton
         style={{ marginRight: `8px` }}
         target="_blank"
-        href=""
+        href="https://t.me/ocpcorp"
         size="medium"
       >
         <img
@@ -47,7 +47,7 @@ const Footer = () => {
           className="social-media-icons"
         />
       </IconButton>
-      <IconButton
+      {/* <IconButton
         style={{ marginRight: `8px` }}
         target="_blank"
         href=""
@@ -57,7 +57,7 @@ const Footer = () => {
           src="/social-media-icons/medium.png"
           className="social-media-icons"
         />
-      </IconButton>
+      </IconButton> */}
     </Box>
   );
 };
