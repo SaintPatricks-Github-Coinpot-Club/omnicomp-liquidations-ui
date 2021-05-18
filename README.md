@@ -1,9 +1,26 @@
 # OmniCOMP Liquidations UI
 
+This is a dashboard for OmniCOMP currency minter which can be used to view the entire position of an account/user.
+This also shows the `health` of all accounts and helps liquidating the undewater ones.
+
+Live frontend:
+
+- Production: https://rekt.ocp.finance/
+
 ## Install dependencies
 
-`yarn`
+```bash
+yarn install --lockfile
+```
 
-## Developing on Public Network
+## Start app in dev mode
 
-Quick run on a public network: `yarn dev`
+```bash
+yarn dev
+```
+
+## Build app
+
+```bash
+yarn build:static
+```
