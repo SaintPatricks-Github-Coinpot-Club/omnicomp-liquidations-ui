@@ -10,7 +10,7 @@ import { ContractAddresses } from "../constants/ContractAddresses";
 import { toBn, toBnFixed } from "../utils/bn";
 import Connection from "./Connection";
 
-interface ProtocolState {
+interface IProtocolState {
   closeFactor: string | null;
   liquidationIncentive: string | null;
 }
@@ -37,7 +37,7 @@ const cTokenInitState = {
   underlyingAddress: null,
 };
 
-const useContractState = () => {
+const useProtocolState = () => {
   const { block$, signer } = Connection.useContainer();
 
   const [Comptroller, setComptroller] = useState<ethers.Contract | null>(null);
@@ -46,7 +46,7 @@ const useContractState = () => {
     [address: string]: CTokenState;
   } | null>(null);
   const [cTokenAddresses, setCTokenAddresses] = useState<string[] | null>(null);
-  const [protocolState, setProtocolState] = useState<ProtocolState | null>(
+  const [protocolState, setProtocolState] = useState<IProtocolState | null>(
     null
   );
 
@@ -67,7 +67,7 @@ const useContractState = () => {
       const markets = res[1];
       setCTokenAddresses(markets);
 
-      const newState: ProtocolState = {
+      const newState: IProtocolState = {
         closeFactor: toBnFixed(res[2]),
         liquidationIncentive: toBnFixed(res[3]),
       };
@@ -158,16 +158,19 @@ const useContractState = () => {
   }, [cTokenAddresses]);
 
   // get state on each block
-  useEffect(() => {
-    if (block$) {
-      const sub = block$.subscribe(() => queryState());
-      return () => sub.unsubscribe();
-    }
-  }, [block$]);
+  // useEffect(() => {
+  //   if (block$) {
+  //     const sub = block$.subscribe(() => {
+  //       queryState();
+  //       fetchAllCTokenData();
+  //     });
+  //     return () => sub.unsubscribe();
+  //   }
+  // }, [block$, Comptroller]);
 
   return { Comptroller, cTokenAddresses, cTokenStates, protocolState };
 };
 
-const ProtocolState_ = createContainer(useContractState);
+const ProtocolState = createContainer(useProtocolState);
 
-export default ProtocolState_;
+export default ProtocolState;

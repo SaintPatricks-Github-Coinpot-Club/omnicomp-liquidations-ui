@@ -13,7 +13,6 @@ import styled from "styled-components";
 import { toBn } from "../../utils/bn";
 
 import ProtocolState from "../../containers/ProtocolState";
-import AllAccountState from "../../containers/AllAccountState";
 import AccountAddress from "../../containers/AccountAddress";
 import AccountState from "../../containers/AccountState";
 
@@ -36,15 +35,14 @@ const AccountDetails = () => {
   const classes = useStyles();
 
   const { cTokenStates } = ProtocolState.useContainer();
-  const { accountGlobalStates } = AllAccountState.useContainer();
   const { accountAddress } = AccountAddress.useContainer();
-  const { accountCTokenState } = AccountState.useContainer();
+  const { accountCTokenState, accountLiquidity } = AccountState.useContainer();
 
   if (
     cTokenStates !== null &&
     accountCTokenState !== null &&
     accountAddress !== null &&
-    accountGlobalStates !== null
+    accountLiquidity !== null
   ) {
     const noSupply: boolean = !Object.keys(accountCTokenState).some(
       (state, index) => accountCTokenState[state].supplyBalance !== "0"
@@ -78,11 +76,7 @@ const AccountDetails = () => {
         <Typography variant="subtitle1">Account {accountAddress}</Typography>
         <Status>
           <Label>State: </Label>
-          {Number(
-            accountGlobalStates[accountAddress.toLowerCase()]?.accountLiquidity
-          ) < 0
-            ? "Unsafe"
-            : "Safe"}
+          {Number(accountLiquidity) < 0 ? "Unsafe" : "Safe"}
         </Status>
         <Status>
           <Label>Total Collateral: </Label>${totalCollateralUsd}

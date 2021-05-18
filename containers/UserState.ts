@@ -21,7 +21,7 @@ const userInitState = {
   needAllowance: null,
 };
 
-const useContractState = () => {
+const useUserState = () => {
   const { block$, signer, userAddress } = Connection.useContainer();
   const { cTokenAddresses } = ProtocolState.useContainer();
 
@@ -93,11 +93,11 @@ const useContractState = () => {
       const sub = block$.subscribe(() => queryState());
       return () => sub.unsubscribe();
     }
-  }, [block$]);
+  }, [block$, userAddress, cTokenAddresses]);
 
   return { userState };
 };
 
-const UserState_ = createContainer(useContractState);
+const UserState_ = createContainer(useUserState);
 
 export default UserState_;

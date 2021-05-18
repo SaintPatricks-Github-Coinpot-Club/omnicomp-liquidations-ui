@@ -16,7 +16,7 @@ const accountGlobalInitState = {
   address: null,
 };
 
-const useContractState = () => {
+const useAllAccountState = () => {
   const { block$ } = Connection.useContainer();
   const { Comptroller } = ProtocolState.useContainer();
   const { allAccounts } = SubGraph.useContainer();
@@ -78,11 +78,11 @@ const useContractState = () => {
       const sub = block$.subscribe(() => queryState());
       return () => sub.unsubscribe();
     }
-  }, [block$]);
+  }, [block$, Comptroller, allAccounts]);
 
   return { accountGlobalStates };
 };
 
-const AllAccountState = createContainer(useContractState);
+const AllAccountState = createContainer(useAllAccountState);
 
 export default AllAccountState;

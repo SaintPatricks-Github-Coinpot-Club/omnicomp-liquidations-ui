@@ -27,7 +27,7 @@ const accountCTokenInitState = {
   borrowBalanceUsd: null,
 };
 
-const useContractState = () => {
+const useAccountState = () => {
   const { block$, signer } = Connection.useContainer();
   const { Comptroller, cTokenStates } = ProtocolState.useContainer();
   const { accountAddress } = AccountAddress.useContainer();
@@ -36,12 +36,26 @@ const useContractState = () => {
     [address: string]: AccountCTokenState;
   } | null>(null);
   const [accountAssetsIn, setAccountAssetsIn] = useState<string[] | null>(null);
+  const [accountLiquidity, setAccountLiquidity] = useState<string | null>(null);
 
   // get state
   const queryState = async () => {
     if (Comptroller !== null && accountAddress !== null) {
       const accountAssetsIn = await Comptroller.getAssetsIn(accountAddress);
       setAccountAssetsIn(accountAssetsIn);
+
+      const liquidityData = await Comptroller.getAccountLiquidity(
+        accountAddress
+      );
+      if (toBn(liquidityData[0]).isZero()) {
+        if (toBn(liquidityData[1]).isGreaterThan(0)) {
+          setAccountLiquidity(toBnFixed(liquidityData[1]));
+        } else if (toBn(liquidityData[2]).isGreaterThan(0)) {
+          setAccountLiquidity(toBn(liquidityData[2]).negated().toFixed());
+        } else {
+          setAccountLiquidity(toBnFixed("0"));
+        }
+      }
     }
   };
 
@@ -116,6 +130,7 @@ const useContractState = () => {
   useEffect(() => {
     setAccountCTokenState(null);
     setAccountAssetsIn(null);
+    setAccountLiquidity(null);
   }, [accountAddress]);
 
   useEffect(() => {
@@ -129,14 +144,17 @@ const useContractState = () => {
   // get state on each block
   useEffect(() => {
     if (block$) {
-      const sub = block$.subscribe(() => queryState());
+      const sub = block$.subscribe(() => {
+        queryState();
+        fetchAllCTokenData();
+      });
       return () => sub.unsubscribe();
     }
-  }, [block$]);
+  }, [block$, Comptroller, cTokenStates, accountAddress]);
 
-  return { accountCTokenState, accountAssetsIn };
+  return { accountCTokenState, accountAssetsIn, accountLiquidity };
 };
 
-const AccountState = createContainer(useContractState);
+const AccountState = createContainer(useAccountState);
 
 export default AccountState;
