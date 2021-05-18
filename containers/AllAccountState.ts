@@ -2,7 +2,7 @@ import { createContainer } from "unstated-next";
 import { useState, useEffect } from "react";
 
 import { toBn, toBnFixed } from "../utils/bn";
-import Connection from "./Connection";
+// import Connection from "./Connection";
 import ProtocolState from "./ProtocolState";
 import SubGraph from "./SubGraph";
 
@@ -17,7 +17,7 @@ const accountGlobalInitState = {
 };
 
 const useAllAccountState = () => {
-  const { block$ } = Connection.useContainer();
+  // const { block$ } = Connection.useContainer();
   const { Comptroller } = ProtocolState.useContainer();
   const { allAccounts } = SubGraph.useContainer();
 
@@ -69,12 +69,12 @@ const useAllAccountState = () => {
   }, [Comptroller, allAccounts]);
 
   // get state on each block
-  useEffect(() => {
-    if (block$) {
-      const sub = block$.subscribe(() => queryState());
-      return () => sub.unsubscribe();
-    }
-  }, [block$, Comptroller, allAccounts]);
+  // useEffect(() => {
+  //   if (block$) {
+  //     const sub = block$.subscribe(() => queryState());
+  //     return () => sub.unsubscribe();
+  //   }
+  // }, [block$, Comptroller, allAccounts]);
 
   return { accountGlobalStates };
 };

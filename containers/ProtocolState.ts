@@ -38,7 +38,7 @@ const cTokenInitState = {
 };
 
 const useProtocolState = () => {
-  const { block$, signer } = Connection.useContainer();
+  const { signer } = Connection.useContainer();
 
   const [Comptroller, setComptroller] = useState<ethers.Contract | null>(null);
   const [Oracle, setOracle] = useState<ethers.Contract | null>(null);
