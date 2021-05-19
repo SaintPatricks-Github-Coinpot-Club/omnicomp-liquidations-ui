@@ -51,7 +51,7 @@ export default class MyApp extends App {
     return (
       <>
         <Head>
-          <title>OmniCOMP</title>
+          <title>REKT - By OMNICOMP</title>
           <meta
             name="viewport"
             content="minimum-scale=1, initial-scale=1, width=device-width"

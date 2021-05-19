@@ -18,12 +18,13 @@ const muiTheme = createMuiTheme({
     primary: { main: "#AAA" },
     secondary: { main: "#ff4a4a" },
     background: {
-      default: "#060614",
+      default: "#000",
     },
   },
   typography: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: [
+      `HK-modular-bold`,
       `FormularMonoW03-Regular`,
       `IBM Plex Mono`,
       `-apple-system`,
