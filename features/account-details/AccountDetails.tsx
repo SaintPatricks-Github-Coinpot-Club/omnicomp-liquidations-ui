@@ -24,11 +24,13 @@ const useStyles = makeStyles({
 
 const Label = styled.span`
   color: #999999;
+  letter-spacing: 1.3px;
 `;
 const Status = styled(Typography)`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: 1.3px;
 `;
 
 const AccountDetails = () => {
@@ -73,7 +75,9 @@ const AccountDetails = () => {
 
     return (
       <Box>
-        <Typography variant="subtitle1">Account {accountAddress}</Typography>
+        <Typography variant="subtitle1" className="letter-spacing">
+          Account {accountAddress}
+        </Typography>
         <Status>
           <Label>State: </Label>
           {Number(accountLiquidity) < 0 ? "Unsafe" : "Safe"}
@@ -103,10 +107,10 @@ const AccountDetails = () => {
                       <TableCell component="th" scope="row">
                         {cTokenStates[state].underlyingSymbol}
                       </TableCell>
-                      <TableCell align="right">
+                      <TableCell align="right" className="letter-spacing">
                         {accountCTokenState[state].supplyBalance}
                       </TableCell>
-                      <TableCell align="right">
+                      <TableCell align="right" className="letter-spacing">
                         {accountCTokenState[state].supplyBalanceUsd}
                       </TableCell>
                     </TableRow>
@@ -115,7 +119,7 @@ const AccountDetails = () => {
             </TableBody>
           </Table>
           {noSupply && (
-            <Typography align="center">
+            <Typography align="center" style={{ padding: "1em" }}>
               No Asset Supplied as Collateral
             </Typography>
           )}
@@ -150,7 +154,11 @@ const AccountDetails = () => {
               )}
             </TableBody>
           </Table>
-          {noBorrow && <Typography align="center">No Asset Minted</Typography>}
+          {noBorrow && (
+            <Typography align="center" style={{ padding: "1em" }}>
+              No Asset Minted
+            </Typography>
+          )}
         </TableContainer>
       </Box>
     );

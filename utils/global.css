@@ -12,6 +12,13 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: HK-modular-bold;
+  src: url("/fonts/hk-modular-bold.ttf");
+  font-style: normal;
+  font-display: swap;
+}
+
 a,
 a:visited {
   color: white;
@@ -51,10 +58,23 @@ a:hover {
 }
 
 .MuiPaper-root {
-  background-color: #1f1f2c;
+  background-color: #363333;
 }
 
 /* Hide What is a wallet container (Onboard js) */
 .bn-onboard-select-info-container {
   display: none !important;
+}
+
+.ocp-link {
+  text-decoration: none !important;
+}
+
+.ocp-link:hover {
+  color: #fff !important;
+  font-family: HK-modular-bold;
+}
+
+.letter-spacing {
+  letter-spacing: 1.4px !important;
 }

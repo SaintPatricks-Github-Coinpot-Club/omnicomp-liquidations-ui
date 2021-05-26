@@ -55,6 +55,7 @@ const Status = styled(Typography)`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: 1.3px;
 `;
 
 const useStyles = makeStyles((theme: Theme) =>

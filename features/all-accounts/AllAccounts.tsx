@@ -113,6 +113,7 @@ const AllAccounts = () => {
               color="primary"
             />
           }
+          style={{ marginLeft: "1em" }}
           label="Show Unhealthy Accounts Only"
           labelPlacement="end"
         />
@@ -143,7 +144,11 @@ const AllAccounts = () => {
                       key={account.id}
                       onClick={() => handleClick(account.id)}
                     >
-                      <TableCell component="th" scope="row">
+                      <TableCell
+                        component="th"
+                        scope="row"
+                        style={{ letterSpacing: "1.25px" }}
+                      >
                         {account.id}
                       </TableCell>
                       <TableCell align="right">
