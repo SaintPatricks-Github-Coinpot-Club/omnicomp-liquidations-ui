@@ -29,6 +29,27 @@ const ConnectButton = styled(Button)`
   ${({ styled }: IProps) => styled.connected && "background-color: #363333;"}
 `;
 
+const BtnNav = styled(Button)`
+  border: none;
+  background: #363333;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #e4e5e8 !important;
+  line-height: 141.44%;
+  box-shadow: none;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0;
+  padding: 0.75em;
+  margin-right: 2em;
+  font-family: HK-modular-bold, Formular-Medium, "IBM Plex Mono",
+    "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "sans-serif";
+  "&:hover": {
+    background: "#efefef"
+    color: red;
+  },
+`;
+
 const AddressBox = styled.div`
   background: #363333;
   border-radius: 5px;
@@ -71,6 +92,7 @@ const Header = () => {
           <img src="/brand/omnicomp.png" style={{ maxWidth: "186px" }} />
         </a>
       </Box>
+
       <Box display="flex" alignItems="center">
         {userAddress && (
           <AddressBox title={userAddress || undefined}>
@@ -79,6 +101,13 @@ const Header = () => {
         )}
         {connected ? (
           <>
+            <BtnNav
+              onClick={() => {
+                window.open("https://v1rekt.ocp.finance");
+              }}
+            >
+              Switch to V1
+            </BtnNav>
             <ConnectButton variant="outlined" styled={{ connected }}>
               <span
                 style={{
