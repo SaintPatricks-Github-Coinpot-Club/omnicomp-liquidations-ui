@@ -26,6 +26,7 @@ a:visited {
 
 a:hover {
   color: #2e2fff !important;
+  text-decoration: none;
 }
 
 .social-media-icons {
