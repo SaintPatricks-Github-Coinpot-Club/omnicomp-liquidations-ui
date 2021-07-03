@@ -11,7 +11,11 @@ import AllAccounts from "../features/all-accounts/AllAccounts";
 import Account from "../features/account-details/Account";
 
 export default function Index() {
-  const { network, userAddress } = Connection.useContainer();
+  const {
+    network,
+    userAddress,
+    SUPPORTED_NETWORK_IDS,
+  } = Connection.useContainer();
   const { accountAddress } = AccountAddress.useContainer();
 
   if (!userAddress) {
@@ -24,7 +28,10 @@ export default function Index() {
         </Box>
       </Container>
     );
-  } else if (network?.chainId !== 56) {
+  } else if (
+    network != null &&
+    !SUPPORTED_NETWORK_IDS?.includes(network.chainId)
+  ) {
     return (
       <Container maxWidth={"md"}>
         <Box py={4}>

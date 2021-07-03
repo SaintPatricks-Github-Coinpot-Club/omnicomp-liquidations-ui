@@ -13,6 +13,8 @@ type Block = ethers.providers.Block;
 type Network = ethers.providers.Network;
 type Signer = ethers.Signer;
 
+const SUPPORTED_NETWORK_IDS: number[] = [56, 137];
+
 function useConnection() {
   const [provider, setProvider] = useState<Provider | null>(null);
   const [onboard, setOnboard] = useState<OnboardApi | null>(null);
@@ -23,28 +25,52 @@ function useConnection() {
   const [block$, setBlock$] = useState<Observable<Block> | null>(null);
 
   const attemptConnection = async () => {
+    // if (_network.chainId === 56 && _network.name === "unknown") {
+    //   _network.name = "BSC";
+    // }
+    // else if (_network.chainId === 137 && _network.name === "unknown") {
+    //   _network.name = "POLYGON";
+    // }
     const onboardInstance = Onboard({
       dappId: config(network).onboardConfig.apiKey,
       hideBranding: true,
-      networkId: 56, // Default. If on a different network will change with the subscription.
+      networkId: 56, // Default to BSC Mainnet. If on a different network will change with the subscription.
+      networkName: "Binance Mainnet or Polygon",
       darkMode: true,
       subscriptions: {
         address: (address: string | null) => {
           setUserAddress(address);
         },
         network: async (networkId: any) => {
+          if (!SUPPORTED_NETWORK_IDS.includes(networkId)) {
+            alert("This dApp will work only with BSC or Polygon network");
+          }
           onboard?.config({ networkId: networkId });
         },
         wallet: async (wallet: Wallet) => {
           if (wallet.provider && wallet.name) {
             const ethersProvider = new ethers.providers.Web3Provider(
-              wallet.provider
+              wallet.provider,
+              "any"
             );
             setProvider(ethersProvider);
+            ethersProvider.on("network", (newNetwork, oldNetwork) => {
+              // When a Provider makes its initial connection, it emits a "network"
+              // event with a null oldNetwork along with the newNetwork. So, if the
+              // oldNetwork exists, it represents a changing network
+              if (oldNetwork) {
+                window.location.reload();
+              }
+            });
 
             const _network = await ethersProvider.getNetwork();
             if (_network.chainId === 56 && _network.name === "unknown") {
               _network.name = "BSC";
+            } else if (
+              _network.chainId === 137 &&
+              _network.name === "unknown"
+            ) {
+              _network.name = "POLYGON";
             }
             setNetwork(_network);
             window.localStorage.setItem("selectedWallet", wallet.name);
@@ -91,6 +117,7 @@ function useConnection() {
 
   // autoselect wallet on load
   useEffect(() => {
+    console.log("NETWORK NAME: ", network);
     const previouslySelectedWallet = window.localStorage.getItem(
       "selectedWallet"
     );
@@ -129,6 +156,7 @@ function useConnection() {
     disconnect,
     error,
     block$,
+    SUPPORTED_NETWORK_IDS,
   };
 }
 

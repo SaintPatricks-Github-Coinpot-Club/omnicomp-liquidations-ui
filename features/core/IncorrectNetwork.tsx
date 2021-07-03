@@ -4,7 +4,7 @@ const IncorrectNetwork = () => {
   return (
     <Box py={2} textAlign="center">
       <Typography>
-        <i>Please switch to BSC Mainnet.</i>
+        <i>Please switch to BSC Mainnet or Polygon.</i>
       </Typography>
     </Box>
   );

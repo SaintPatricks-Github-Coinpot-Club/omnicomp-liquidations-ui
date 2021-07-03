@@ -38,7 +38,7 @@ const cTokenInitState = {
 };
 
 const useProtocolState = () => {
-  const { signer } = Connection.useContainer();
+  const { network, signer, SUPPORTED_NETWORK_IDS } = Connection.useContainer();
 
   const [Comptroller, setComptroller] = useState<ethers.Contract | null>(null);
   const [Oracle, setOracle] = useState<ethers.Contract | null>(null);
@@ -135,15 +135,22 @@ const useProtocolState = () => {
   };
 
   useEffect(() => {
-    if (signer) {
+    // console.log("Network name Container: ", network);
+    if (signer && network && SUPPORTED_NETWORK_IDS.includes(network.chainId)) {
+      // let chainId = parseInt(network.chainId);
+      // let comptrollerAddresses: any = {...ContractAddresses[network.chainId]};
+      // let comptroller = comptrollerAddresses['Comptroller'];
+      const addresses: any = ContractAddresses[network.chainId];
+      const ComptrollerAddr = addresses["Comptroller"];
+      console.log(addresses, " address of Comptroller");
       const instance = new ethers.Contract(
-        ContractAddresses.Comptroller,
+        ComptrollerAddr,
         ComptrollerAbi,
         signer
       );
       setComptroller(instance);
     }
-  }, [signer]);
+  }, [signer, network]);
 
   // get state on setting of contract
   useEffect(() => {
