@@ -61,7 +61,13 @@ const AllAccounts = () => {
   const [checked, setChecked] = useState(false);
 
   if (accounts !== null && accountGlobalStates !== null) {
-    const filteredAccounts = [...accounts].filter(
+    const toBeShownAccountsAll = [...accounts].filter(
+      (a: any) =>
+        a.id != "0xdb21617ddcceed28568af2f8fc6549887712a011" &&
+        a.id != "0x744d761cee18a3d7810524d3c6ce5150a49e00d9" &&
+        a.id != "0x7e0bbff9687fdc81d666fc4d070846b994e8ba5e"
+    );
+    const filteredAccounts = [...toBeShownAccountsAll].filter(
       (a: any) => Number(accountGlobalStates[a.id]?.accountLiquidity) < 0
     );
     const sortedAccounts = [...filteredAccounts].sort(
@@ -70,7 +76,7 @@ const AllAccounts = () => {
         Number(accountGlobalStates[b.id]?.accountLiquidity)
     );
 
-    const toBeShownAccounts = checked ? sortedAccounts : accounts;
+    const toBeShownAccounts = checked ? sortedAccounts : toBeShownAccountsAll;
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setChecked(event.target.checked);
