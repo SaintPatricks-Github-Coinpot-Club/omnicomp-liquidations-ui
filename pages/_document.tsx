@@ -24,7 +24,7 @@ export default class MyDocument extends Document {
         styles: (
           <>
             <Head>
-              <link rel="icon" type="image/png" href="favicon.png" />
+              <link rel="icon" type="image/png" href="favicon-vault.png" />
             </Head>
             {initialProps.styles}
             {materialSheets.getStyleElement()}
