@@ -1,3 +1,3 @@
 export const ContractAddresses = {
-  Comptroller: "0x0aBBAba95439dAbc12a6bA59E0713a722a05cB31",
+  Comptroller: "0xe84088da45F48E9393a834352278C94D644Ef888",
 };
