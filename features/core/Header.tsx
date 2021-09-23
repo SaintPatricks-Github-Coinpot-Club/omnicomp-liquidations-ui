@@ -66,13 +66,8 @@ const AddressBox = styled.div`
 `;
 
 const Header = () => {
-  const {
-    connect,
-    disconnect,
-    signer,
-    network,
-    userAddress,
-  } = Connection.useContainer();
+  const { connect, disconnect, signer, network, userAddress } =
+    Connection.useContainer();
   const connected = signer !== null;
 
   const networkName = network?.name === "homestead" ? "mainnet" : network?.name;
@@ -89,7 +84,7 @@ const Header = () => {
     >
       <Box>
         <a href="/">
-          <img src="/brand/omnicomp.png" style={{ maxWidth: "186px" }} />
+          <img src="/brand/omnicomp-vault.png" style={{ maxWidth: "186px" }} />
         </a>
       </Box>
 
