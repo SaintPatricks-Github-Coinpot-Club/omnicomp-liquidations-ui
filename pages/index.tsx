@@ -4,7 +4,7 @@ import Connection from "../containers/Connection";
 import AccountAddress from "../containers/AccountAddress";
 
 import Header from "../features/core/Header";
-import Footer from "../features/core/Footer";
+// import Footer from "../features/core/Footer";
 import NoWalletConnection from "../features/core/NoWalletConnection";
 import IncorrectNetwork from "../features/core/IncorrectNetwork";
 import AllAccounts from "../features/all-accounts/AllAccounts";
@@ -20,7 +20,7 @@ export default function Index() {
         <Box py={4}>
           <Header />
           <NoWalletConnection />
-          <Footer />
+          {/* <Footer /> */}
         </Box>
       </Container>
     );
@@ -30,7 +30,7 @@ export default function Index() {
         <Box py={4}>
           <Header />
           <IncorrectNetwork />
-          <Footer />
+          {/* <Footer /> */}
         </Box>
       </Container>
     );
@@ -42,7 +42,7 @@ export default function Index() {
         <Header />
         {accountAddress && <Account />}
         {!accountAddress && <AllAccounts />}
-        <Footer />
+        {/* <Footer /> */}
       </Box>
     </Container>
   );
